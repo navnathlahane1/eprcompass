@@ -1,0 +1,632 @@
+[
+  {
+    "slug": "european-union",
+    "name": "European Union",
+    "flag": "🇪🇺",
+    "region": "Europe",
+    "regulation": "Packaging, Batteries, WEEE, Vehicles, and more under EU EPR directives.",
+    "authority": "European Commission and national authorities",
+    "categories": ["Plastic", "E-Waste", "Battery", "Packaging", "Tyre"],
+    "status": "active"
+  },
+  {
+    "slug": "germany",
+    "name": "Germany",
+    "flag": "🇩🇪",
+    "region": "Europe",
+    "regulation": "EU Packaging & WEEE Directive",
+    "authority": "National EPR Registry",
+    "categories": ["Plastic", "E-Waste", "Battery", "Tyre", "Packaging"],
+    "status": "active"
+  },
+  {
+    "slug": "france",
+    "name": "France",
+    "flag": "🇫🇷",
+    "region": "Europe",
+    "regulation": "EU Packaging & WEEE Directive",
+    "authority": "National EPR Registry",
+    "categories": ["Plastic", "E-Waste", "Battery", "Tyre", "Packaging"],
+    "status": "active"
+  },
+  {
+    "slug": "united-kingdom",
+    "name": "United Kingdom",
+    "flag": "🇬🇧",
+    "region": "Europe",
+    "regulation": "UK WEEE Regulations / Packaging Waste Regulations",
+    "authority": "Environment Agency",
+    "categories": ["Plastic", "E-Waste", "Battery", "Packaging"],
+    "status": "active"
+  },
+  {
+    "slug": "italy",
+    "name": "Italy",
+    "flag": "🇮🇹",
+    "region": "Europe",
+    "regulation": "EU Packaging & WEEE Directive",
+    "authority": "National EPR Registry",
+    "categories": ["Plastic", "E-Waste", "Battery", "Tyre", "Packaging"],
+    "status": "active"
+  },
+  {
+    "slug": "spain",
+    "name": "Spain",
+    "flag": "🇪🇸",
+    "region": "Europe",
+    "regulation": "EU Packaging & WEEE Directive",
+    "authority": "National EPR Registry",
+    "categories": ["Plastic", "E-Waste", "Battery", "Tyre", "Packaging"],
+    "status": "active"
+  },
+  {
+    "slug": "netherlands",
+    "name": "Netherlands",
+    "flag": "🇳🇱",
+    "region": "Europe",
+    "regulation": "EU Packaging & WEEE Directive",
+    "authority": "National EPR Registry",
+    "categories": ["Plastic", "E-Waste", "Battery", "Packaging"],
+    "status": "active"
+  },
+  {
+    "slug": "belgium",
+    "name": "Belgium",
+    "flag": "🇧🇪",
+    "region": "Europe",
+    "regulation": "EU Packaging & WEEE Directive",
+    "authority": "National EPR Registry",
+    "categories": ["Plastic", "E-Waste", "Battery", "Packaging"],
+    "status": "active"
+  },
+  {
+    "slug": "austria",
+    "name": "Austria",
+    "flag": "🇦🇹",
+    "region": "Europe",
+    "regulation": "EU Packaging & WEEE Directive",
+    "authority": "National EPR Registry",
+    "categories": ["Plastic", "E-Waste", "Battery", "Packaging"],
+    "status": "active"
+  },
+  {
+    "slug": "sweden",
+    "name": "Sweden",
+    "flag": "🇸🇪",
+    "region": "Europe",
+    "regulation": "EU Packaging & WEEE Directive",
+    "authority": "National EPR Registry",
+    "categories": ["Plastic", "E-Waste", "Battery", "Packaging"],
+    "status": "active"
+  },
+  {
+    "slug": "norway",
+    "name": "Norway",
+    "flag": "🇳🇴",
+    "region": "Europe",
+    "regulation": "EEA-aligned Waste and Producer Responsibility Rules",
+    "authority": "Miljodirektoratet",
+    "categories": ["Plastic", "E-Waste", "Battery", "Packaging"],
+    "status": "active"
+  },
+  {
+    "slug": "denmark",
+    "name": "Denmark",
+    "flag": "🇩🇰",
+    "region": "Europe",
+    "regulation": "EU Packaging & WEEE Directive",
+    "authority": "National EPR Registry",
+    "categories": ["Plastic", "E-Waste", "Battery", "Packaging"],
+    "status": "active"
+  },
+  {
+    "slug": "finland",
+    "name": "Finland",
+    "flag": "🇫🇮",
+    "region": "Europe",
+    "regulation": "EU Packaging & WEEE Directive",
+    "authority": "National EPR Registry",
+    "categories": ["Plastic", "E-Waste", "Battery", "Packaging"],
+    "status": "active"
+  },
+  {
+    "slug": "poland",
+    "name": "Poland",
+    "flag": "🇵🇱",
+    "region": "Europe",
+    "regulation": "EU Packaging & WEEE Directive",
+    "authority": "National EPR Registry",
+    "categories": ["Plastic", "E-Waste", "Battery", "Packaging"],
+    "status": "active"
+  },
+  {
+    "slug": "portugal",
+    "name": "Portugal",
+    "flag": "🇵🇹",
+    "region": "Europe",
+    "regulation": "EU Packaging & WEEE Directive",
+    "authority": "National EPR Registry",
+    "categories": ["Plastic", "E-Waste", "Battery", "Packaging"],
+    "status": "active"
+  },
+  {
+    "slug": "switzerland",
+    "name": "Switzerland",
+    "flag": "🇨🇭",
+    "region": "Europe",
+    "regulation": "Swiss ORRChem and Producer Responsibility Schemes",
+    "authority": "FOEN",
+    "categories": ["Plastic", "E-Waste", "Battery", "Packaging"],
+    "status": "active"
+  },
+  {
+    "slug": "czech-republic",
+    "name": "Czech Republic",
+    "flag": "🇨🇿",
+    "region": "Europe",
+    "regulation": "EU Packaging & WEEE Directive",
+    "authority": "National EPR Registry",
+    "categories": ["Plastic", "E-Waste", "Battery", "Packaging"],
+    "status": "active"
+  },
+  {
+    "slug": "hungary",
+    "name": "Hungary",
+    "flag": "🇭🇺",
+    "region": "Europe",
+    "regulation": "EU Packaging & WEEE Directive",
+    "authority": "National EPR Registry",
+    "categories": ["Plastic", "E-Waste", "Battery", "Packaging"],
+    "status": "active"
+  },
+  {
+    "slug": "romania",
+    "name": "Romania",
+    "flag": "🇷🇴",
+    "region": "Europe",
+    "regulation": "EU Packaging & WEEE Directive",
+    "authority": "National EPR Registry",
+    "categories": ["Plastic", "E-Waste", "Battery", "Packaging"],
+    "status": "active"
+  },
+  {
+    "slug": "greece",
+    "name": "Greece",
+    "flag": "🇬🇷",
+    "region": "Europe",
+    "regulation": "EU Packaging & WEEE Directive",
+    "authority": "National EPR Registry",
+    "categories": ["Plastic", "E-Waste", "Battery", "Packaging"],
+    "status": "active"
+  },
+  {
+    "slug": "ireland",
+    "name": "Ireland",
+    "flag": "🇮🇪",
+    "region": "Europe",
+    "regulation": "EU Packaging & WEEE Directive",
+    "authority": "National EPR Registry",
+    "categories": ["Plastic", "E-Waste", "Battery", "Packaging"],
+    "status": "active"
+  },
+  {
+    "slug": "slovakia",
+    "name": "Slovakia",
+    "flag": "🇸🇰",
+    "region": "Europe",
+    "regulation": "EU Packaging & WEEE Directive",
+    "authority": "National EPR Registry",
+    "categories": ["Plastic", "E-Waste", "Battery", "Packaging"],
+    "status": "active"
+  },
+  {
+    "slug": "slovenia",
+    "name": "Slovenia",
+    "flag": "🇸🇮",
+    "region": "Europe",
+    "regulation": "EU Packaging & WEEE Directive",
+    "authority": "National EPR Registry",
+    "categories": ["Plastic", "E-Waste", "Battery", "Packaging"],
+    "status": "active"
+  },
+  {
+    "slug": "croatia",
+    "name": "Croatia",
+    "flag": "🇭🇷",
+    "region": "Europe",
+    "regulation": "EU Packaging & WEEE Directive",
+    "authority": "National EPR Registry",
+    "categories": ["Plastic", "E-Waste", "Battery", "Packaging"],
+    "status": "active"
+  },
+  {
+    "slug": "bulgaria",
+    "name": "Bulgaria",
+    "flag": "🇧🇬",
+    "region": "Europe",
+    "regulation": "EU Packaging & WEEE Directive",
+    "authority": "National EPR Registry",
+    "categories": ["Plastic", "E-Waste", "Battery", "Packaging"],
+    "status": "active"
+  },
+  {
+    "slug": "estonia",
+    "name": "Estonia",
+    "flag": "🇪🇪",
+    "region": "Europe",
+    "regulation": "EU Packaging & WEEE Directive",
+    "authority": "National EPR Registry",
+    "categories": ["Plastic", "E-Waste", "Battery", "Packaging"],
+    "status": "active"
+  },
+  {
+    "slug": "latvia",
+    "name": "Latvia",
+    "flag": "🇱🇻",
+    "region": "Europe",
+    "regulation": "EU Packaging & WEEE Directive",
+    "authority": "National EPR Registry",
+    "categories": ["Plastic", "E-Waste", "Battery", "Packaging"],
+    "status": "active"
+  },
+  {
+    "slug": "lithuania",
+    "name": "Lithuania",
+    "flag": "🇱🇹",
+    "region": "Europe",
+    "regulation": "EU Packaging & WEEE Directive",
+    "authority": "National EPR Registry",
+    "categories": ["Plastic", "E-Waste", "Battery", "Packaging"],
+    "status": "active"
+  },
+  {
+    "slug": "luxembourg",
+    "name": "Luxembourg",
+    "flag": "🇱🇺",
+    "region": "Europe",
+    "regulation": "EU Packaging & WEEE Directive",
+    "authority": "National EPR Registry",
+    "categories": ["Plastic", "E-Waste", "Battery", "Packaging"],
+    "status": "active"
+  },
+  {
+    "slug": "cyprus",
+    "name": "Cyprus",
+    "flag": "🇨🇾",
+    "region": "Europe",
+    "regulation": "EU Packaging & WEEE Directive",
+    "authority": "National EPR Registry",
+    "categories": ["Plastic", "E-Waste", "Battery", "Packaging"],
+    "status": "active"
+  },
+  {
+    "slug": "malta",
+    "name": "Malta",
+    "flag": "🇲🇹",
+    "region": "Europe",
+    "regulation": "EU Packaging & WEEE Directive",
+    "authority": "National EPR Registry",
+    "categories": ["Plastic", "E-Waste", "Battery", "Packaging"],
+    "status": "active"
+  },
+  {
+    "slug": "india",
+    "name": "India",
+    "flag": "🇮🇳",
+    "region": "Asia-Pacific",
+    "regulation": "E-Waste Rules 2022 / PWM Rules 2016 / BWM Rules 2022",
+    "authority": "CPCB",
+    "categories": ["Plastic", "E-Waste", "Battery", "Tyre"],
+    "status": "active"
+  },
+  {
+    "slug": "china",
+    "name": "China",
+    "flag": "🇨🇳",
+    "region": "Asia-Pacific",
+    "regulation": "Circular Economy Promotion Law and WEEE Measures",
+    "authority": "MEE",
+    "categories": ["E-Waste", "Battery", "Plastic", "Packaging"],
+    "status": "active"
+  },
+  {
+    "slug": "japan",
+    "name": "Japan",
+    "flag": "🇯🇵",
+    "region": "Asia-Pacific",
+    "regulation": "Home Appliance Recycling Law and Packaging Recycling Act",
+    "authority": "MOE Japan",
+    "categories": ["E-Waste", "Battery", "Plastic", "Packaging"],
+    "status": "active"
+  },
+  {
+    "slug": "south-korea",
+    "name": "South Korea",
+    "flag": "🇰🇷",
+    "region": "Asia-Pacific",
+    "regulation": "Act on Resource Circulation and EPR System",
+    "authority": "MOE Korea",
+    "categories": ["E-Waste", "Battery", "Plastic", "Packaging"],
+    "status": "active"
+  },
+  {
+    "slug": "australia",
+    "name": "Australia",
+    "flag": "🇦🇺",
+    "region": "Asia-Pacific",
+    "regulation": "Product Stewardship Act and National Waste Policy",
+    "authority": "DCCEEW",
+    "categories": ["E-Waste", "Battery", "Plastic", "Packaging", "Tyre"],
+    "status": "active"
+  },
+  {
+    "slug": "new-zealand",
+    "name": "New Zealand",
+    "flag": "🇳🇿",
+    "region": "Asia-Pacific",
+    "regulation": "Waste Minimisation Act and Product Stewardship",
+    "authority": "MfE",
+    "categories": ["E-Waste", "Battery", "Tyre", "Packaging"],
+    "status": "active"
+  },
+  {
+    "slug": "vietnam",
+    "name": "Vietnam",
+    "flag": "🇻🇳",
+    "region": "Asia-Pacific",
+    "regulation": "Law on Environmental Protection Decree 08/2022",
+    "authority": "MONRE",
+    "categories": ["E-Waste", "Battery", "Packaging", "Tyre"],
+    "status": "active"
+  },
+  {
+    "slug": "thailand",
+    "name": "Thailand",
+    "flag": "🇹🇭",
+    "region": "Asia-Pacific",
+    "regulation": "Pollution Control and Producer Responsibility Framework",
+    "authority": "PCD",
+    "categories": ["E-Waste", "Battery", "Plastic", "Packaging"],
+    "status": "active"
+  },
+  {
+    "slug": "indonesia",
+    "name": "Indonesia",
+    "flag": "🇮🇩",
+    "region": "Asia-Pacific",
+    "regulation": "Waste Management Law and Producer Responsibility Policies",
+    "authority": "KLHK",
+    "categories": ["Plastic", "Packaging", "E-Waste", "Battery"],
+    "status": "active"
+  },
+  {
+    "slug": "malaysia",
+    "name": "Malaysia",
+    "flag": "🇲🇾",
+    "region": "Asia-Pacific",
+    "regulation": "Solid Waste and Public Cleansing Act and EPR Framework",
+    "authority": "SWCorp",
+    "categories": ["Plastic", "Packaging", "E-Waste", "Battery"],
+    "status": "active"
+  },
+  {
+    "slug": "philippines",
+    "name": "Philippines",
+    "flag": "🇵🇭",
+    "region": "Asia-Pacific",
+    "regulation": "Extended Producer Responsibility Act 2022",
+    "authority": "DENR",
+    "categories": ["Plastic", "Packaging", "E-Waste", "Battery"],
+    "status": "active"
+  },
+  {
+    "slug": "singapore",
+    "name": "Singapore",
+    "flag": "🇸🇬",
+    "region": "Asia-Pacific",
+    "regulation": "Resource Sustainability Act",
+    "authority": "NEA",
+    "categories": ["E-Waste", "Battery", "Packaging"],
+    "status": "active"
+  },
+  {
+    "slug": "taiwan",
+    "name": "Taiwan",
+    "flag": "🇹🇼",
+    "region": "Asia-Pacific",
+    "regulation": "Waste Disposal Act and Recycling Fund System",
+    "authority": "EPA Taiwan",
+    "categories": ["E-Waste", "Battery", "Plastic", "Packaging"],
+    "status": "active"
+  },
+  {
+    "slug": "bangladesh",
+    "name": "Bangladesh",
+    "flag": "🇧🇩",
+    "region": "Asia-Pacific",
+    "regulation": "Draft E-Waste and Plastic Responsibility Rules",
+    "authority": "DoE Bangladesh",
+    "categories": ["E-Waste", "Battery", "Plastic", "Packaging"],
+    "status": "active"
+  },
+  {
+    "slug": "sri-lanka",
+    "name": "Sri Lanka",
+    "flag": "🇱🇰",
+    "region": "Asia-Pacific",
+    "regulation": "National Waste Management and EPR Policy",
+    "authority": "CEA Sri Lanka",
+    "categories": ["E-Waste", "Battery", "Plastic", "Packaging"],
+    "status": "active"
+  },
+  {
+    "slug": "united-states",
+    "name": "United States",
+    "flag": "🇺🇸",
+    "region": "Americas",
+    "regulation": "State-level EPR Laws for Packaging, Electronics and Batteries",
+    "authority": "State EPR Agencies",
+    "categories": ["Plastic", "Packaging", "E-Waste", "Battery", "Tyre"],
+    "status": "active"
+  },
+  {
+    "slug": "canada",
+    "name": "Canada",
+    "flag": "🇨🇦",
+    "region": "Americas",
+    "regulation": "Provincial EPR Regulations and Stewardship Programs",
+    "authority": "Provincial EPR Authorities",
+    "categories": ["Plastic", "Packaging", "E-Waste", "Battery", "Tyre"],
+    "status": "active"
+  },
+  {
+    "slug": "brazil",
+    "name": "Brazil",
+    "flag": "🇧🇷",
+    "region": "Americas",
+    "regulation": "National Solid Waste Policy and Reverse Logistics Rules",
+    "authority": "MMA Brazil",
+    "categories": ["Plastic", "Packaging", "E-Waste", "Battery", "Tyre"],
+    "status": "active"
+  },
+  {
+    "slug": "mexico",
+    "name": "Mexico",
+    "flag": "🇲🇽",
+    "region": "Americas",
+    "regulation": "General Law for Waste Prevention and EPR Measures",
+    "authority": "SEMARNAT",
+    "categories": ["Plastic", "Packaging", "E-Waste", "Battery"],
+    "status": "active"
+  },
+  {
+    "slug": "chile",
+    "name": "Chile",
+    "flag": "🇨🇱",
+    "region": "Americas",
+    "regulation": "REP Law (Ley 20.920)",
+    "authority": "MMA Chile",
+    "categories": ["Packaging", "E-Waste", "Battery", "Tyre"],
+    "status": "active"
+  },
+  {
+    "slug": "colombia",
+    "name": "Colombia",
+    "flag": "🇨🇴",
+    "region": "Americas",
+    "regulation": "Post-consumer Responsibility and EPR Resolution Framework",
+    "authority": "MinAmbiente",
+    "categories": ["Packaging", "E-Waste", "Battery", "Tyre"],
+    "status": "active"
+  },
+  {
+    "slug": "argentina",
+    "name": "Argentina",
+    "flag": "🇦🇷",
+    "region": "Americas",
+    "regulation": "Provincial EPR and Waste Management Frameworks",
+    "authority": "MAyDS",
+    "categories": ["Packaging", "E-Waste", "Battery", "Tyre"],
+    "status": "active"
+  },
+  {
+    "slug": "united-arab-emirates",
+    "name": "United Arab Emirates",
+    "flag": "🇦🇪",
+    "region": "Middle East & Africa",
+    "regulation": "Federal Waste Management Framework and EPR Programs",
+    "authority": "MoCCAE",
+    "categories": ["Plastic", "Packaging", "E-Waste", "Battery"],
+    "status": "active"
+  },
+  {
+    "slug": "saudi-arabia",
+    "name": "Saudi Arabia",
+    "flag": "🇸🇦",
+    "region": "Middle East & Africa",
+    "regulation": "National Waste Management Regulations and EPR Directives",
+    "authority": "MWAN",
+    "categories": ["Plastic", "Packaging", "E-Waste", "Battery", "Tyre"],
+    "status": "active"
+  },
+  {
+    "slug": "south-africa",
+    "name": "South Africa",
+    "flag": "🇿🇦",
+    "region": "Middle East & Africa",
+    "regulation": "Section 18 EPR Regulations",
+    "authority": "DFFE",
+    "categories": ["Plastic", "Packaging", "E-Waste", "Battery", "Tyre"],
+    "status": "active"
+  },
+  {
+    "slug": "kenya",
+    "name": "Kenya",
+    "flag": "🇰🇪",
+    "region": "Middle East & Africa",
+    "regulation": "Sustainable Waste Management Act and EPR Regulations",
+    "authority": "NEMA Kenya",
+    "categories": ["Plastic", "Packaging", "E-Waste", "Battery"],
+    "status": "active"
+  },
+  {
+    "slug": "morocco",
+    "name": "Morocco",
+    "flag": "🇲🇦",
+    "region": "Middle East & Africa",
+    "regulation": "National Waste Law and Producer Responsibility Programs",
+    "authority": "Department of Environment",
+    "categories": ["Plastic", "Packaging", "E-Waste", "Battery"],
+    "status": "active"
+  },
+  {
+    "slug": "egypt",
+    "name": "Egypt",
+    "flag": "🇪🇬",
+    "region": "Middle East & Africa",
+    "regulation": "Waste Management Law and EPR Framework",
+    "authority": "WMRA",
+    "categories": ["Plastic", "Packaging", "E-Waste", "Battery"],
+    "status": "active"
+  },
+  {
+    "slug": "turkey",
+    "name": "Turkey",
+    "flag": "🇹🇷",
+    "region": "Middle East & Africa",
+    "regulation": "Packaging Waste Control Regulation and WEEE Regulation",
+    "authority": "MoEUCC",
+    "categories": ["Plastic", "Packaging", "E-Waste", "Battery", "Tyre"],
+    "status": "active"
+  },
+  {
+    "slug": "israel",
+    "name": "Israel",
+    "flag": "🇮🇱",
+    "region": "Middle East & Africa",
+    "regulation": "Packaging Law and Electronic Waste Treatment Law",
+    "authority": "Ministry of Environmental Protection",
+    "categories": ["Plastic", "Packaging", "E-Waste", "Battery"],
+    "status": "active"
+  },
+  {
+    "slug": "iceland",
+    "name": "Iceland",
+    "flag": "🇮🇸",
+    "region": "Europe",
+    "regulation": "EEA-aligned Producer Responsibility for Packaging and WEEE",
+    "authority": "Umhverfisstofnun",
+    "categories": ["Plastic", "Packaging", "E-Waste", "Battery"],
+    "status": "active"
+  },
+  {
+    "slug": "liechtenstein",
+    "name": "Liechtenstein",
+    "flag": "🇱🇮",
+    "region": "Europe",
+    "regulation": "EEA-aligned Producer Responsibility Framework",
+    "authority": "National EPR Registry",
+    "categories": ["Plastic", "Packaging", "E-Waste", "Battery"],
+    "status": "active"
+  }
+]

@@ -1,0 +1,16 @@
+{
+  "name": "EPR Compass",
+  "short_name": "EPR Compass",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#28104f",
+  "icons": [
+    {
+      "src": "/imgs/epr-compass/epr-compass-platform.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+import { createCipheriv, createDecipheriv, randomBytes } from 'crypto';
+
+const ALGORITHM = 'aes-256-gcm';
+const IV_LEN = 12;   // 96-bit IV recommended for GCM
+const TAG_LEN = 16;  // 128-bit auth tag
+
+function getKey(): Buffer {
+  const hex = process.env.COMMS_ENCRYPTION_KEY ?? '';
+  if (hex.length < 64) {
+    throw new Error('COMMS_ENCRYPTION_KEY must be at least 64 hex characters (32 bytes)');
+  }
+  return Buffer.from(hex.slice(0, 64), 'hex');
+}
+
+// Returns "ivHex:authTagHex:ciphertextHex" — safe to store in a text column.
+export function encryptValue(plaintext: string): string {
+  const key = getKey();
+  const iv = randomBytes(IV_LEN);
+  const cipher = createCipheriv(ALGORITHM, key, iv, { authTagLength: TAG_LEN });
+  const encrypted = Buffer.concat([cipher.update(plaintext, 'utf8'), cipher.final()]);
+  const tag = cipher.getAuthTag();
+  return `${iv.toString('hex')}:${tag.toString('hex')}:${encrypted.toString('hex')}`;
+}
+
+// Throws on bad ciphertext or wrong key (authentication failure).
+export function decryptValue(stored: string): string {
+  const parts = stored.split(':');
+  if (parts.length !== 3) throw new Error('Malformed encrypted value');
+  const [ivHex, tagHex, ctHex] = parts;
+  const key = getKey();
+  const iv = Buffer.from(ivHex, 'hex');
+  const tag = Buffer.from(tagHex, 'hex');
+  const ct = Buffer.from(ctHex, 'hex');
+  const decipher = createDecipheriv(ALGORITHM, key, iv, { authTagLength: TAG_LEN });
+  decipher.setAuthTag(tag);
+  return Buffer.concat([decipher.update(ct), decipher.final()]).toString('utf8');
+}

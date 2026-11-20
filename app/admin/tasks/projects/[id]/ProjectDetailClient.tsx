@@ -1,0 +1,573 @@
+'use client';
+
+import { useState, useEffect, useCallback } from 'react';
+import Link from 'next/link';
+
+type Profile = { id: string; full_name: string; role: string };
+type Project = { id: string; name: string; description: string; status: string; start_date: string; end_date: string; owner_id: string };
+type Task = { id: string; title: string; status: string; priority: string; assigned_to: string; due_date: string; category: string; sla_hours: number; created_at: string; profiles?: { full_name: string } };
+type Member = { user_id: string; role: string; profiles: { full_name: string; role: string } };
+type Warning = { id: string; warning_type: string; severity: string; message: string; created_at: string };
+type ActivityItem = { id: string; action: string; created_at: string; actor?: { full_name: string }; meta?: any };
+
+const STATUS_BG: Record<string, string> = {
+  todo: 'bg-slate-700 text-slate-300',
+  in_progress: 'bg-blue-500/20 text-blue-400',
+  review: 'bg-purple-500/20 text-purple-400',
+  blocked: 'bg-red-500/20 text-red-400',
+  done: 'bg-green-500/20 text-green-400',
+};
+
+const SEVERITY_COLOR: Record<string, string> = {
+  critical: 'text-red-400 border-red-500/30 bg-red-500/10',
+  high: 'text-orange-400 border-orange-500/30 bg-orange-500/10',
+  medium: 'text-yellow-400 border-yellow-500/30 bg-yellow-500/10',
+  low: 'text-slate-400 border-slate-600 bg-slate-800',
+};
+
+const TABS = ['Overview', 'Tasks', 'Members', 'Warnings', 'Activity'];
+
+export default function ProjectDetailClient({
+  projectId,
+  currentUser,
+  allUsers,
+}: {
+  projectId: string;
+  currentUser: Profile | null;
+  allUsers: Profile[];
+}) {
+  const [tab, setTab] = useState('Overview');
+  const [project, setProject] = useState<Project | null>(null);
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [members, setMembers] = useState<Member[]>([]);
+  const [warnings, setWarnings] = useState<Warning[]>([]);
+  const [activity, setActivity] = useState<ActivityItem[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const [showTaskModal, setShowTaskModal] = useState(false);
+  const [showMemberModal, setShowMemberModal] = useState(false);
+  const [taskForm, setTaskForm] = useState({ title: '', description: '', priority: 'Medium', assigned_to: '', due_date: '', sla_hours: '', category: 'general' });
+  const [saving, setSaving] = useState(false);
+  const [selectedTask, setSelectedTask] = useState<Task | null>(null);
+  const [comments, setComments] = useState<any[]>([]);
+  const [commentText, setCommentText] = useState('');
+
+  const load = useCallback(async () => {
+    setLoading(true);
+    const res = await fetch(`/api/admin/projects/${projectId}`);
+    if (!res.ok) { setLoading(false); return; }
+    const data = await res.json();
+    setProject(data.project);
+    setTasks(data.tasks || []);
+    setMembers(data.members || []);
+    setWarnings(data.warnings || []);
+    setActivity(data.activity || []);
+    setLoading(false);
+  }, [projectId]);
+
+  useEffect(() => { load(); }, [load]);
+
+  const loadComments = async (taskId: string) => {
+    const res = await fetch(`/api/admin/projects/${projectId}/tasks/${taskId}/comments`);
+    const data = await res.json();
+    setComments(data.comments || []);
+  };
+
+  const createTask = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSaving(true);
+    await fetch(`/api/admin/projects/${projectId}/tasks`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...taskForm, sla_hours: taskForm.sla_hours ? Number(taskForm.sla_hours) : null }),
+    });
+    setSaving(false);
+    setShowTaskModal(false);
+    setTaskForm({ title: '', description: '', priority: 'Medium', assigned_to: '', due_date: '', sla_hours: '', category: 'general' });
+    load();
+  };
+
+  const updateTaskStatus = async (taskId: string, status: string) => {
+    await fetch(`/api/admin/projects/${projectId}/tasks/${taskId}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status }),
+    });
+    load();
+  };
+
+  const resolveWarning = async (warningId: string) => {
+    await fetch(`/api/admin/projects/${projectId}/warnings/${warningId}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ resolved: true }),
+    });
+    setWarnings(w => w.filter(x => x.id !== warningId));
+  };
+
+  const addComment = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedTask || !commentText.trim()) return;
+    await fetch(`/api/admin/projects/${projectId}/tasks/${selectedTask.id}/comments`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ body: commentText }),
+    });
+    setCommentText('');
+    loadComments(selectedTask.id);
+  };
+
+  const addMember = async (userId: string, role: string) => {
+    await fetch(`/api/admin/projects/${projectId}/members`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ user_id: userId, role }),
+    });
+    setShowMemberModal(false);
+    load();
+  };
+
+  const removeMember = async (userId: string) => {
+    if (!confirm('Remove this member from the project?')) return;
+    await fetch(`/api/admin/projects/${projectId}/members/${userId}`, { method: 'DELETE' });
+    load();
+  };
+
+  const openTaskDetail = async (task: Task) => {
+    setSelectedTask(task);
+    await loadComments(task.id);
+  };
+
+  if (loading) return (
+    <div className="min-h-screen bg-[#020817] flex items-center justify-center">
+      <div className="text-slate-400">Loading project...</div>
+    </div>
+  );
+
+  if (!project) return (
+    <div className="min-h-screen bg-[#020817] flex items-center justify-center">
+      <div className="text-slate-400">Project not found</div>
+    </div>
+  );
+
+  const tasksByStatus = {
+    todo: tasks.filter(t => t.status === 'todo'),
+    in_progress: tasks.filter(t => t.status === 'in_progress'),
+    review: tasks.filter(t => t.status === 'review'),
+    blocked: tasks.filter(t => t.status === 'blocked'),
+    done: tasks.filter(t => t.status === 'done'),
+  };
+
+  return (
+    <div className="min-h-screen bg-[#020817] text-white">
+      {/* Header */}
+      <div className="border-b border-slate-800 px-6 py-4">
+        <div className="max-w-6xl mx-auto">
+          <div className="flex items-center gap-2 text-sm text-slate-500 mb-2">
+            <Link href="/admin/tasks/projects" className="hover:text-white transition-colors">Projects</Link>
+            <span>/</span>
+            <span className="text-white">{project.name}</span>
+          </div>
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-xl font-bold text-white">{project.name}</h1>
+              {project.description && <p className="text-slate-400 text-sm mt-0.5">{project.description}</p>}
+            </div>
+            <div className="flex gap-2">
+              {warnings.length > 0 && (
+                <span className="px-3 py-1.5 bg-amber-500/20 text-amber-400 rounded-lg text-sm font-medium">
+                  ⚠️ {warnings.length} warnings
+                </span>
+              )}
+              <button
+                onClick={() => setShowTaskModal(true)}
+                className="px-3 py-1.5 bg-teal-600 hover:bg-teal-500 text-white rounded-lg text-sm font-medium transition-colors"
+              >
+                + Add Task
+              </button>
+            </div>
+          </div>
+          {/* Stats row */}
+          <div className="flex gap-6 mt-3 text-xs text-slate-400">
+            <span>📋 {tasks.length} tasks</span>
+            <span>👥 {members.length} members</span>
+            <span>✅ {tasksByStatus.done.length} done</span>
+            {project.end_date && <span>📅 Due {new Date(project.end_date).toLocaleDateString('en-IN')}</span>}
+          </div>
+        </div>
+      </div>
+
+      {/* Tabs */}
+      <div className="border-b border-slate-800 px-6">
+        <div className="max-w-6xl mx-auto flex gap-1">
+          {TABS.map(t => (
+            <button
+              key={t}
+              onClick={() => setTab(t)}
+              className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors ${
+                tab === t ? 'border-teal-500 text-teal-400' : 'border-transparent text-slate-400 hover:text-white'
+              }`}
+            >
+              {t}
+              {t === 'Warnings' && warnings.length > 0 && (
+                <span className="ml-1.5 bg-amber-500 text-black text-xs px-1.5 py-0.5 rounded-full">{warnings.length}</span>
+              )}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="max-w-6xl mx-auto p-6">
+        {/* OVERVIEW TAB */}
+        {tab === 'Overview' && (
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="lg:col-span-2 space-y-6">
+              {/* Progress */}
+              <div className="bg-slate-900 border border-slate-800 rounded-xl p-5">
+                <h3 className="text-sm font-semibold text-white mb-4">Task Progress</h3>
+                <div className="grid grid-cols-5 gap-2 text-center mb-4">
+                  {Object.entries(tasksByStatus).map(([status, list]) => (
+                    <div key={status} className="bg-slate-800 rounded-lg p-3">
+                      <div className="text-xl font-bold text-white">{list.length}</div>
+                      <div className="text-xs text-slate-400 capitalize mt-0.5">{status.replace('_', ' ')}</div>
+                    </div>
+                  ))}
+                </div>
+                {tasks.length > 0 && (
+                  <div className="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
+                    <div
+                      className="h-full bg-teal-500 rounded-full transition-all"
+                      style={{ width: `${(tasksByStatus.done.length / tasks.length) * 100}%` }}
+                    />
+                  </div>
+                )}
+              </div>
+              {/* Recent activity */}
+              <div className="bg-slate-900 border border-slate-800 rounded-xl p-5">
+                <h3 className="text-sm font-semibold text-white mb-4">Recent Activity</h3>
+                {activity.length === 0 ? (
+                  <p className="text-slate-500 text-sm">No activity yet</p>
+                ) : (
+                  <div className="space-y-3">
+                    {activity.slice(0, 8).map(item => (
+                      <div key={item.id} className="flex gap-3">
+                        <div className="w-1.5 h-1.5 rounded-full bg-teal-500 mt-1.5 shrink-0" />
+                        <div>
+                          <span className="text-xs text-white">{item.actor?.full_name || 'System'}</span>
+                          <span className="text-xs text-slate-400"> {item.action.replace(/_/g, ' ')}</span>
+                          <div className="text-xs text-slate-600">{new Date(item.created_at).toLocaleString('en-IN')}</div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+            {/* Members sidebar */}
+            <div className="space-y-4">
+              <div className="bg-slate-900 border border-slate-800 rounded-xl p-5">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-sm font-semibold text-white">Team Members</h3>
+                  <button onClick={() => setShowMemberModal(true)} className="text-xs text-teal-400 hover:text-teal-300">+ Add</button>
+                </div>
+                <div className="space-y-3">
+                  {members.map(m => (
+                    <div key={m.user_id} className="flex items-center justify-between">
+                      <div>
+                        <div className="text-sm text-white">{m.profiles?.full_name}</div>
+                        <div className="text-xs text-slate-500 capitalize">{m.role}</div>
+                      </div>
+                      {m.user_id !== project.owner_id && (
+                        <button onClick={() => removeMember(m.user_id)} className="text-xs text-red-400 hover:text-red-300 opacity-60 hover:opacity-100">✕</button>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+              {warnings.length > 0 && (
+                <div className="bg-slate-900 border border-amber-500/30 rounded-xl p-5">
+                  <h3 className="text-sm font-semibold text-amber-400 mb-3">⚠️ Active Warnings</h3>
+                  <div className="space-y-2">
+                    {warnings.slice(0, 3).map(w => (
+                      <div key={w.id} className={`text-xs p-2 rounded border ${SEVERITY_COLOR[w.severity]}`}>
+                        {w.message}
+                      </div>
+                    ))}
+                    {warnings.length > 3 && (
+                      <button onClick={() => setTab('Warnings')} className="text-xs text-slate-400 hover:text-white">
+                        +{warnings.length - 3} more warnings →
+                      </button>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* TASKS TAB */}
+        {tab === 'Tasks' && (
+          <div>
+            <div className="flex justify-end mb-4">
+              <button onClick={() => setShowTaskModal(true)} className="px-3 py-1.5 bg-teal-600 hover:bg-teal-500 text-white rounded-lg text-sm transition-colors">
+                + Add Task
+              </button>
+            </div>
+            <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
+              {Object.entries(tasksByStatus).map(([status, list]) => (
+                <div key={status} className="bg-slate-900 border border-slate-800 rounded-xl p-4">
+                  <div className="flex items-center justify-between mb-3">
+                    <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider capitalize">{status.replace('_', ' ')}</h3>
+                    <span className="text-xs text-slate-500 bg-slate-800 px-1.5 py-0.5 rounded">{list.length}</span>
+                  </div>
+                  <div className="space-y-2">
+                    {list.map(task => (
+                      <div
+                        key={task.id}
+                        onClick={() => openTaskDetail(task)}
+                        className="bg-slate-800 hover:bg-slate-700 rounded-lg p-3 cursor-pointer transition-colors"
+                      >
+                        <p className="text-xs text-white font-medium leading-snug mb-2">{task.title}</p>
+                        <div className="flex items-center justify-between">
+                          <span className={`text-[10px] px-1.5 py-0.5 rounded ${task.priority === 'Urgent' ? 'bg-red-500/20 text-red-400' : task.priority === 'High' ? 'bg-orange-500/20 text-orange-400' : task.priority === 'Medium' ? 'bg-yellow-500/20 text-yellow-400' : 'bg-slate-700 text-slate-400'}`}>
+                            {task.priority}
+                          </span>
+                          {task.profiles && <span className="text-[10px] text-slate-500">{task.profiles.full_name.split(' ')[0]}</span>}
+                        </div>
+                        {task.due_date && (
+                          <div className={`text-[10px] mt-1 ${new Date(task.due_date) < new Date() ? 'text-red-400' : 'text-slate-500'}`}>
+                            📅 {new Date(task.due_date).toLocaleDateString('en-IN')}
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* MEMBERS TAB */}
+        {tab === 'Members' && (
+          <div>
+            <div className="flex justify-end mb-4">
+              <button onClick={() => setShowMemberModal(true)} className="px-3 py-1.5 bg-teal-600 hover:bg-teal-500 text-white rounded-lg text-sm transition-colors">
+                + Add Member
+              </button>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {members.map(m => {
+                const taskCount = tasks.filter(t => t.assigned_to === m.user_id && t.status !== 'done').length;
+                return (
+                  <div key={m.user_id} className="bg-slate-900 border border-slate-800 rounded-xl p-5">
+                    <div className="flex items-start justify-between mb-3">
+                      <div>
+                        <div className="text-sm font-semibold text-white">{m.profiles?.full_name}</div>
+                        <div className="text-xs text-slate-500 capitalize mt-0.5">{m.role}</div>
+                      </div>
+                      {m.user_id === project.owner_id && (
+                        <span className="text-xs bg-teal-500/20 text-teal-400 px-2 py-0.5 rounded-full">Owner</span>
+                      )}
+                    </div>
+                    <div className="flex items-center justify-between text-xs text-slate-400">
+                      <span>{taskCount} open tasks</span>
+                      {m.user_id !== project.owner_id && (
+                        <button onClick={() => removeMember(m.user_id)} className="text-red-400 hover:text-red-300">Remove</button>
+                      )}
+                    </div>
+                    {taskCount > 10 && (
+                      <div className="mt-2 text-xs text-amber-400">⚠️ Overloaded</div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* WARNINGS TAB */}
+        {tab === 'Warnings' && (
+          <div className="space-y-3">
+            {warnings.length === 0 ? (
+              <div className="text-center py-16 text-slate-500">
+                <div className="text-4xl mb-2">✅</div>
+                <p>No active warnings</p>
+              </div>
+            ) : warnings.map(w => (
+              <div key={w.id} className={`border rounded-xl p-4 flex items-center justify-between ${SEVERITY_COLOR[w.severity]}`}>
+                <div>
+                  <div className="text-sm font-medium">{w.message}</div>
+                  <div className="text-xs opacity-70 mt-0.5 capitalize">{w.severity} · {w.warning_type.replace(/_/g, ' ')} · {new Date(w.created_at).toLocaleString('en-IN')}</div>
+                </div>
+                <button
+                  onClick={() => resolveWarning(w.id)}
+                  className="ml-4 text-xs px-3 py-1.5 bg-slate-700 hover:bg-slate-600 text-white rounded-lg transition-colors shrink-0"
+                >
+                  Resolve
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* ACTIVITY TAB */}
+        {tab === 'Activity' && (
+          <div className="space-y-2">
+            {activity.map(item => (
+              <div key={item.id} className="flex gap-4 py-3 border-b border-slate-800">
+                <div className="w-2 h-2 rounded-full bg-teal-500 mt-1.5 shrink-0" />
+                <div className="flex-1 min-w-0">
+                  <span className="text-sm text-white font-medium">{item.actor?.full_name || 'System'}</span>
+                  <span className="text-sm text-slate-400"> {item.action.replace(/_/g, ' ')}</span>
+                  {item.meta?.title && <span className="text-sm text-slate-300"> "{item.meta.title}"</span>}
+                </div>
+                <div className="text-xs text-slate-500 shrink-0">{new Date(item.created_at).toLocaleString('en-IN')}</div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Task Detail Modal */}
+      {selectedTask && (
+        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
+          <div className="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
+            <div className="p-5 border-b border-slate-800 flex items-start justify-between">
+              <div>
+                <h2 className="text-base font-semibold text-white">{selectedTask.title}</h2>
+                <div className="flex gap-2 mt-1">
+                  <span className={`text-xs px-2 py-0.5 rounded ${STATUS_BG[selectedTask.status]}`}>{selectedTask.status.replace('_', ' ')}</span>
+                  <span className="text-xs text-slate-400">{selectedTask.priority}</span>
+                </div>
+              </div>
+              <button onClick={() => setSelectedTask(null)} className="text-slate-400 hover:text-white ml-3">✕</button>
+            </div>
+            <div className="p-5 space-y-4">
+              {/* Status actions */}
+              <div>
+                <label className="text-xs text-slate-400 mb-2 block">Change Status</label>
+                <div className="flex flex-wrap gap-2">
+                  {['todo', 'in_progress', 'review', 'blocked', 'done'].map(s => (
+                    <button
+                      key={s}
+                      onClick={() => { updateTaskStatus(selectedTask.id, s); setSelectedTask({ ...selectedTask, status: s }); }}
+                      className={`text-xs px-2.5 py-1 rounded transition-colors ${selectedTask.status === s ? STATUS_BG[s] + ' ring-1 ring-teal-500' : 'bg-slate-800 text-slate-400 hover:text-white'}`}
+                    >
+                      {s.replace('_', ' ')}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              {/* Comments */}
+              <div>
+                <label className="text-xs text-slate-400 mb-2 block">Comments</label>
+                <div className="space-y-2 mb-3 max-h-40 overflow-y-auto">
+                  {comments.length === 0 ? (
+                    <p className="text-xs text-slate-500">No comments yet</p>
+                  ) : comments.map(c => (
+                    <div key={c.id} className="bg-slate-800 rounded-lg p-2.5">
+                      <div className="text-xs font-medium text-teal-400">{c.author?.full_name}</div>
+                      <div className="text-xs text-slate-300 mt-0.5">{c.content}</div>
+                      <div className="text-[10px] text-slate-500 mt-1">{new Date(c.created_at).toLocaleString('en-IN')}</div>
+                    </div>
+                  ))}
+                </div>
+                <form onSubmit={addComment} className="flex gap-2">
+                  <input
+                    value={commentText}
+                    onChange={e => setCommentText(e.target.value)}
+                    placeholder="Add a comment..."
+                    className="flex-1 bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-teal-600"
+                  />
+                  <button type="submit" className="px-3 py-2 bg-teal-600 hover:bg-teal-500 text-white rounded-lg text-xs transition-colors">Post</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* New Task Modal */}
+      {showTaskModal && (
+        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
+          <div className="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-md">
+            <div className="p-5 border-b border-slate-800">
+              <h2 className="text-base font-semibold text-white">Add Task</h2>
+            </div>
+            <form onSubmit={createTask} className="p-5 space-y-3">
+              <div>
+                <label className="text-xs text-slate-400 mb-1 block">Title *</label>
+                <input required value={taskForm.title} onChange={e => setTaskForm(f => ({ ...f, title: e.target.value }))} placeholder="Task title" className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-teal-600" />
+              </div>
+              <div>
+                <label className="text-xs text-slate-400 mb-1 block">Description</label>
+                <textarea value={taskForm.description} onChange={e => setTaskForm(f => ({ ...f, description: e.target.value }))} rows={2} className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-teal-600" />
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-xs text-slate-400 mb-1 block">Assign To</label>
+                  <select value={taskForm.assigned_to} onChange={e => setTaskForm(f => ({ ...f, assigned_to: e.target.value }))} className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-teal-600">
+                    <option value="">Unassigned</option>
+                    {members.map(m => <option key={m.user_id} value={m.user_id}>{m.profiles?.full_name}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <label className="text-xs text-slate-400 mb-1 block">Priority</label>
+                  <select value={taskForm.priority} onChange={e => setTaskForm(f => ({ ...f, priority: e.target.value }))} className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-teal-600">
+                    {['Low', 'Medium', 'High', 'Urgent'].map(p => <option key={p}>{p}</option>)}
+                  </select>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-xs text-slate-400 mb-1 block">Due Date</label>
+                  <input type="date" value={taskForm.due_date} onChange={e => setTaskForm(f => ({ ...f, due_date: e.target.value }))} className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-teal-600" />
+                </div>
+                <div>
+                  <label className="text-xs text-slate-400 mb-1 block">SLA (hours)</label>
+                  <input type="number" value={taskForm.sla_hours} onChange={e => setTaskForm(f => ({ ...f, sla_hours: e.target.value }))} placeholder="e.g. 24" className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-teal-600" />
+                </div>
+              </div>
+              <div className="flex gap-3 pt-2">
+                <button type="button" onClick={() => setShowTaskModal(false)} className="flex-1 px-4 py-2 bg-slate-800 hover:bg-slate-700 rounded-lg text-sm text-slate-300">Cancel</button>
+                <button type="submit" disabled={saving} className="flex-1 px-4 py-2 bg-teal-600 hover:bg-teal-500 disabled:opacity-50 rounded-lg text-sm text-white font-medium">
+                  {saving ? 'Adding...' : 'Add Task'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Add Member Modal */}
+      {showMemberModal && (
+        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
+          <div className="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-sm">
+            <div className="p-5 border-b border-slate-800">
+              <h2 className="text-base font-semibold text-white">Add Member</h2>
+            </div>
+            <div className="p-5">
+              <div className="space-y-2 max-h-60 overflow-y-auto">
+                {allUsers
+                  .filter(u => !members.find(m => m.user_id === u.id))
+                  .map(u => (
+                    <div key={u.id} className="flex items-center justify-between bg-slate-800 rounded-lg px-3 py-2">
+                      <div>
+                        <div className="text-sm text-white">{u.full_name}</div>
+                        <div className="text-xs text-slate-500">{u.role}</div>
+                      </div>
+                      <button onClick={() => addMember(u.id, 'member')} className="text-xs px-2.5 py-1 bg-teal-600 hover:bg-teal-500 text-white rounded transition-colors">
+                        Add
+                      </button>
+                    </div>
+                  ))}
+              </div>
+              <button onClick={() => setShowMemberModal(false)} className="w-full mt-4 px-4 py-2 bg-slate-800 hover:bg-slate-700 rounded-lg text-sm text-slate-300">Close</button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}

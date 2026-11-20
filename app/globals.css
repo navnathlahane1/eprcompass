@@ -1,0 +1,1116 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── EPR Certificate theme ────────────────────────────────────── */
+:root {
+  /* Homepage / EPR Compass brand palette — used across the public site */
+  --brand-primary: #3f1b66;
+  --brand-primary-hover: #562685;
+  --brand-secondary: #28104f;
+  --brand-accent: #e98200;
+  --brand-surface: #fffcf8;
+  --brand-text: #281d39;
+  --brand-muted: #72627e;
+  --brand-border: #e4d5ee;
+  --brand-danger: #dc2626;
+  --brand-warning: #f59e0b;
+  --brand-success: #4a2183;
+  --brand-lime: #e98200;
+  --brand-pale: #f0e6fa;
+  --brand-cta-from: #562685;
+  --brand-cta-via: #3f1b66;
+  --brand-cta-to: #28104f;
+
+  /* Transition tokens */
+  --transition-fast: 150ms ease;
+  --transition-base: 250ms ease;
+  --transition-slow: 400ms ease-in-out;
+
+  /* Legacy aliases retained for backward compatibility */
+  --epr-primary: var(--brand-primary);
+  --epr-primary-hover: var(--brand-primary-hover);
+  --epr-navy: var(--brand-secondary);
+  --epr-navy-light: #3b1d5d;
+  --epr-ocean: var(--brand-accent);
+
+  /* Semantic surface/text tokens (light) */
+  --color-bg:            var(--brand-surface);
+  --color-surface:       #ffffff;
+  --color-surface-muted: #f4ecfa;
+  --color-text:          var(--brand-text);
+  --color-text-muted:    var(--brand-muted);
+  --color-border:        var(--brand-border);
+  --color-primary:       var(--epr-primary);
+  --color-primary-fg:    #ffffff;
+  --color-accent:        var(--brand-accent);
+  --color-ring:          var(--epr-primary);
+
+  /* Admin panel surface tokens */
+  --admin-bg:          #fffcf8;
+  --admin-card:        #ffffff;
+  --admin-border:      #e4d5ee;
+  --admin-header-bg:   #f0e6fa;
+}
+
+.dark, [data-theme="dark"] {
+  --color-bg:            #180832;
+  --color-surface:       #24104c;
+  --color-surface-muted: #28104f;
+  --color-text:          #f8f1fb;
+  --color-text-muted:    #cbb9dc;
+  --color-border:        #54367a;
+  --color-primary-fg:    #ffffff;
+}
+
+html {
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+}
+
+html,
+body {
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-sans), sans-serif;
+}
+
+body {
+  font-size: 1rem;
+  line-height: 1.55;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-display), serif;
+}
+
+.font-mono,
+code,
+pre {
+  font-family: var(--font-mono), monospace;
+}
+
+/* Respect user motion preference (WCAG, Apple HIG, Material reduced motion) */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Default visible focus for keyboard users (rule: focus-states) */
+:focus-visible {
+  outline: 2px solid var(--color-ring);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ─── Admin card system ─────────────────────────────────────────── */
+@layer components {
+  /* Base white card — use on all admin info sections */
+  .admin-card {
+    @apply rounded-xl bg-white border border-[#e8ecf0] shadow-sm dark:bg-gray-900 dark:border-gray-800;
+  }
+
+  /* Section header row inside a card (blue-tinted strip like the reference) */
+  .admin-card-header {
+    @apply rounded-t-xl bg-[#f0f4f8] border-b border-[#e8ecf0] px-5 py-3 text-sm font-semibold uppercase tracking-wide text-gray-600 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300;
+  }
+
+  /* Card body padding */
+  .admin-card-body {
+    @apply px-5 py-4;
+  }
+
+  /* Label + value pair used inside info grids (contrast bumped from gray-400 → gray-600 to clear WCAG 4.5:1) */
+  .admin-field-label {
+    @apply block text-sm font-medium text-gray-600 dark:text-gray-400 mb-1;
+  }
+  .admin-field-value {
+    @apply text-sm font-medium text-gray-900 dark:text-gray-100;
+  }
+
+  /* KPI metric card */
+  .admin-kpi-card {
+    @apply admin-card flex items-start gap-3 px-4 py-4 hover:shadow-md transition-shadow;
+  }
+  .admin-kpi-icon {
+    @apply flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-white;
+  }
+  .admin-kpi-label {
+    @apply text-sm font-medium text-gray-600 dark:text-gray-400 leading-tight;
+  }
+  .admin-kpi-value {
+    @apply text-base font-bold text-gray-900 dark:text-gray-100 mt-0.5 tabular-nums;
+  }
+  .admin-kpi-delta-up {
+    @apply text-xs font-semibold text-emerald-700 dark:text-emerald-400 tabular-nums;
+  }
+  .admin-kpi-delta-down {
+    @apply text-xs font-semibold text-red-700 dark:text-red-400 tabular-nums;
+  }
+
+  /* Status badge variants — icon + text recommended; color alone is not WCAG compliant */
+  .badge-active   { @apply inline-flex items-center gap-1 rounded-full bg-emerald-100 px-2.5 py-0.5 text-xs font-semibold text-emerald-800 dark:bg-emerald-950/50 dark:text-emerald-300; }
+  .badge-pending  { @apply inline-flex items-center gap-1 rounded-full bg-amber-100  px-2.5 py-0.5 text-xs font-semibold text-amber-800  dark:bg-amber-950/50  dark:text-amber-300; }
+  .badge-churned  { @apply inline-flex items-center gap-1 rounded-full bg-red-100    px-2.5 py-0.5 text-xs font-semibold text-red-800    dark:bg-red-950/50    dark:text-red-300; }
+  .badge-info     { @apply inline-flex items-center gap-1 rounded-full bg-blue-100   px-2.5 py-0.5 text-xs font-semibold text-blue-800   dark:bg-blue-950/50   dark:text-blue-300; }
+  .badge-neutral  { @apply inline-flex items-center gap-1 rounded-full bg-gray-100   px-2.5 py-0.5 text-xs font-semibold text-gray-700   dark:bg-gray-800      dark:text-gray-300; }
+
+  /* Page title pattern */
+  .admin-page-title {
+    @apply text-xl font-bold text-gray-900 dark:text-gray-100 leading-tight;
+  }
+  .admin-page-subtitle {
+    @apply mt-0.5 text-sm text-gray-600 dark:text-gray-400;
+  }
+  /* Page header row — consistent title + actions strip */
+  .admin-page-header {
+    @apply flex flex-wrap items-start justify-between gap-3 mb-4 pb-4 border-b border-[#e8ecf0] dark:border-gray-800;
+  }
+
+  /* Table used in admin listings — thead contrast bumped, sticky header support, focus row */
+  .admin-table {
+    @apply w-full text-sm;
+  }
+  .admin-table thead tr {
+    @apply border-b border-[#e8ecf0] dark:border-gray-800;
+  }
+  .admin-table thead th {
+    @apply py-3 px-4 text-left text-sm font-semibold uppercase tracking-wide text-gray-700 dark:text-gray-300 bg-[#f8fafc] dark:bg-gray-900/60;
+  }
+  .admin-table tbody tr {
+    @apply border-b border-[#f0f4f8] last:border-0 hover:bg-[#f8fafc] transition-colors dark:border-gray-800/60 dark:hover:bg-gray-800/40 focus-within:bg-[#f0f7fa] dark:focus-within:bg-gray-800/60;
+  }
+  .admin-table tbody td {
+    @apply py-3 px-4 text-gray-800 dark:text-gray-200 align-middle;
+  }
+  .admin-table tbody td.num,
+  .admin-table tbody td[data-numeric="true"] {
+    @apply text-right tabular-nums;
+  }
+
+  /* Buttons — focus rings + 44px min height (mobile touch target), proper disabled cursor */
+  .btn-primary {
+      @apply inline-flex items-center justify-center gap-1.5 rounded-lg bg-[var(--brand-primary)] px-4 py-2 min-h-[40px] sm:min-h-0 text-sm font-semibold text-white shadow-sm
+        hover:bg-[var(--brand-primary-hover)] active:bg-[#35145f]
+        focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-primary)] focus-visible:ring-offset-2 dark:focus-visible:ring-offset-gray-900
+        disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-[var(--brand-primary)]
+           transition;
+  }
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-1.5 rounded-lg border border-gray-300 bg-white px-4 py-2 min-h-[40px] sm:min-h-0 text-sm font-semibold text-gray-800
+           hover:bg-gray-50 active:bg-gray-100
+           focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-primary)] focus-visible:ring-offset-2 dark:focus-visible:ring-offset-gray-900
+           disabled:opacity-50 disabled:cursor-not-allowed
+           dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100 dark:hover:bg-gray-800
+           transition;
+  }
+  .btn-danger {
+    @apply inline-flex items-center justify-center gap-1.5 rounded-lg bg-red-600 px-4 py-2 min-h-[40px] sm:min-h-0 text-sm font-semibold text-white shadow-sm
+           hover:bg-red-700 active:bg-red-800
+           focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-gray-900
+           disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-red-600
+           transition;
+  }
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-1.5 rounded-lg px-3 py-2 min-h-[40px] sm:min-h-0 text-sm font-semibold text-gray-700
+           hover:bg-gray-100 active:bg-gray-200
+           focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-primary)]
+           disabled:opacity-50 disabled:cursor-not-allowed
+           dark:text-gray-200 dark:hover:bg-gray-800
+           transition;
+  }
+
+  /* Form input — brand-aligned focus ring (was indigo, now teal); 44px touch target on mobile */
+  .input {
+    @apply w-full border border-gray-300 rounded-lg px-3 py-2 min-h-[44px] sm:min-h-0 text-base bg-white text-gray-900 placeholder-gray-400
+           focus:outline-none focus:ring-2 focus:ring-[var(--brand-primary)] focus:border-[var(--brand-primary)]
+           disabled:opacity-60 disabled:cursor-not-allowed disabled:bg-gray-50
+           read-only:bg-gray-50 read-only:text-gray-700
+           dark:bg-gray-900 dark:text-gray-100 dark:border-gray-700 dark:placeholder-gray-500 dark:read-only:bg-gray-800/60
+           transition;
+  }
+  .input-error {
+    @apply border-red-500 focus:ring-red-500 focus:border-red-500;
+  }
+  .input-label {
+    @apply block text-sm font-medium text-gray-800 dark:text-gray-200 mb-1.5;
+  }
+  .input-help {
+    @apply mt-1 text-xs text-gray-600 dark:text-gray-400;
+  }
+  .input-error-message {
+    @apply mt-1 text-xs font-medium text-red-700 dark:text-red-400;
+  }
+
+  /* Skeleton placeholder — replace blocking spinners with shimmer */
+  .skeleton {
+    @apply relative overflow-hidden bg-gray-200 dark:bg-gray-800 rounded;
+  }
+  .skeleton::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.45) 50%, transparent 100%);
+    transform: translateX(-100%);
+    animation: skeleton-shimmer 1.4s ease-in-out infinite;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .skeleton::after { animation: none; }
+  }
+  .dark .skeleton::after {
+    background-image: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.07) 50%, transparent 100%);
+  }
+
+  /* Empty state pattern — when a list/table has no rows */
+  .empty-state {
+    @apply flex flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-gray-300 dark:border-gray-700 bg-gray-50/60 dark:bg-gray-900/40 px-6 py-12 text-center;
+  }
+  .empty-state-title {
+    @apply text-sm font-semibold text-gray-800 dark:text-gray-200;
+  }
+  .empty-state-body {
+    @apply text-sm text-gray-600 dark:text-gray-400 max-w-xs;
+  }
+}
+
+@keyframes skeleton-shimmer {
+  100% { transform: translateX(100%); }
+}
+
+/* ─── Global form-field theming ──────────────────────────────────
+   Site-wide directive: every text-entry field and dropdown renders
+   blue text on a white background. Applied unlayered + !important so
+   it wins over Tailwind utility classes and dark-mode variants on
+   individual fields. Non-text input types (checkbox, radio, range,
+   color, file, buttons) are excluded so they keep their native UI. */
+input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="file"]):not([type="submit"]):not([type="button"]):not([type="reset"]):not([type="image"]),
+textarea,
+select {
+  background-color: #ffffff !important;
+  color: #1d4ed8 !important;        /* blue-700 — strong contrast on white */
+  -webkit-text-fill-color: #1d4ed8; /* keeps autofilled / iOS text blue */
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #93c5fd !important;        /* blue-300 — muted but readable */
+  opacity: 1;
+}
+
+/* Dropdown option list (native popup) */
+select option {
+  background-color: #ffffff !important;
+  color: #1d4ed8 !important;
+}
+
+/* EPR Compass public pages use restrained neutral form text. */
+.epr-public input:not([type="checkbox"]):not([type="radio"]),
+.epr-public textarea,
+.epr-public select {
+  color: #17343d !important;
+  -webkit-text-fill-color: #17343d;
+  font-size: 16px;
+}
+
+.epr-public input::placeholder,
+.epr-public textarea::placeholder {
+  color: #82928f !important;
+}
+
+.epr-public,
+.epr-public h1,
+.epr-public h2,
+.epr-public h3,
+.epr-public h4,
+.epr-public h5,
+.epr-public h6 {
+  font-family: var(--font-sans), sans-serif;
+}
+
+/* EPR Compass public-site design system */
+.epr-public,
+header,
+footer {
+  --epr-navy: #28104f;
+  --epr-navy-deep: #180832;
+  --epr-green: #3f1b66;
+  --epr-green-dark: #28104f;
+  --epr-lime: #e98200;
+  --epr-pale: #f0e6fa;
+  --epr-pale-cool: #fffcf8;
+  --epr-ink: #281d39;
+  --epr-muted: #72627e;
+  --epr-border: #e4d5ee;
+  --epr-shadow: 0 8px 24px rgba(40, 16, 79, 0.055);
+  --epr-shadow-lg: 0 18px 44px rgba(40, 16, 79, 0.13);
+}
+
+.epr-public {
+  color: var(--epr-ink);
+  background: #fff;
+}
+
+.epr-container {
+  width: min(100% - 2rem, 1280px);
+  margin-inline: auto;
+}
+
+.epr-section {
+  padding-block: clamp(2.5rem, 5vw, 4.5rem);
+}
+
+.epr-card {
+  border: 1px solid var(--epr-border);
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: var(--epr-shadow);
+}
+
+.epr-button {
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
+  justify-content: center;
+  gap: .5rem;
+  border-radius: .5rem;
+  padding-inline: 1.25rem;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  transition: background-color .2s ease, color .2s ease, border-color .2s ease, transform .2s ease;
+}
+
+.epr-button:focus-visible {
+  outline: 2px solid var(--epr-green);
+  outline-offset: 3px;
+}
+
+.epr-button-primary {
+  background: var(--epr-green);
+  color: #fff;
+}
+
+.epr-button-primary:hover {
+  background: var(--epr-green-dark);
+  transform: translateY(-1px);
+}
+
+.epr-button-shine {
+  position: relative;
+  overflow: hidden;
+}
+.epr-button-shine::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  width: 40%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.28), transparent);
+  transform: translateX(-140%);
+  pointer-events: none;
+}
+.epr-button-shine:hover::after {
+  animation: epr-shine 0.9s ease;
+}
+
+@keyframes epr-shine {
+  0% { transform: translateX(-140%); }
+  100% { transform: translateX(220%); }
+}
+
+.epr-button-secondary {
+  border: 1px solid #76ab97;
+  background: #fff;
+  color: var(--epr-green);
+}
+
+.epr-button-secondary:hover {
+  background: var(--epr-pale);
+}
+
+.epr-eyebrow {
+  color: var(--epr-green);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.epr-display {
+  color: var(--epr-ink);
+  font-size: clamp(2.2rem, 4.2vw, 3.55rem);
+  font-weight: 800;
+  line-height: 1.12;
+  letter-spacing: -.04em;
+}
+
+.epr-display-inner {
+  color: var(--epr-ink);
+  font-size: clamp(2.15rem, 3.25vw, 2.8rem);
+  font-weight: 800;
+  line-height: 1.16;
+  letter-spacing: -.04em;
+}
+
+.epr-band-navy {
+  background: var(--epr-navy);
+  color: #fff;
+}
+
+.epr-cta-band {
+  background-image: linear-gradient(105deg, var(--brand-cta-from) 0%, var(--brand-cta-via) 42%, var(--brand-cta-to) 100%);
+  color: #fff;
+}
+
+.epr-pale-band {
+  background: linear-gradient(180deg, #f5fbfc, #edf7f8);
+}
+
+/* Map leftover Tailwind teal utilities on public pages to the homepage green. */
+.epr-public .text-teal-300,
+.epr-public .text-teal-400,
+.epr-public .text-teal-500,
+.epr-public .text-teal-600,
+.epr-public .text-teal-700,
+.epr-public .text-cyan-500,
+.epr-public .text-cyan-600,
+.epr-public .text-cyan-700 {
+  color: var(--brand-primary) !important;
+}
+
+.epr-public .bg-teal-50,
+.epr-public .bg-cyan-50 {
+  background-color: var(--brand-pale) !important;
+}
+
+.epr-public .bg-teal-100,
+.epr-public .bg-cyan-100 {
+  background-color: #dff2ed !important;
+}
+
+.epr-public .bg-teal-500,
+.epr-public .bg-teal-600,
+.epr-public .bg-teal-700,
+.epr-public [class~="hover:bg-teal-600"]:hover,
+.epr-public [class~="hover:bg-teal-700"]:hover,
+.epr-public .bg-cyan-500,
+.epr-public .bg-cyan-600 {
+  background-color: var(--brand-primary) !important;
+}
+
+.epr-public .border-teal-200,
+.epr-public .border-teal-300,
+.epr-public .border-cyan-200 {
+  border-color: #b9d8ca !important;
+}
+
+.epr-public .from-teal-50,
+.epr-public .from-cyan-50 {
+  --tw-gradient-from: #eff8f1 var(--tw-gradient-from-position) !important;
+}
+
+.epr-public .from-teal-500,
+.epr-public .from-teal-600,
+.epr-public .to-teal-600,
+.epr-public .to-teal-700,
+.epr-public .to-cyan-600 {
+  --tw-gradient-from: #562685 var(--tw-gradient-from-position);
+  --tw-gradient-to: #28104f var(--tw-gradient-to-position);
+}
+
+@media (max-width: 640px) {
+  .epr-container { width: min(100% - 1.5rem, 1280px); }
+}
+
+/* Internal application palette: plum, lavender and amber. Public marketing pages
+   retain their own styling; AppShell applies this scope to signed-in surfaces. */
+.epr-internal {
+  --brand-primary: #4a2183;
+  --brand-primary-hover: #35145f;
+  --brand-secondary: #24104c;
+  --brand-accent: #f39a08;
+  --brand-surface: #fffdfa;
+  --brand-text: #211735;
+  --brand-muted: #71677f;
+  --brand-border: #e2d5ef;
+  --brand-success: #07875f;
+  --brand-lime: #f39a08;
+  --brand-pale: #f3eaff;
+  --epr-navy: #24104c;
+  --epr-navy-deep: #180832;
+  --epr-green: #4a2183;
+  --epr-green-dark: #35145f;
+  --epr-lime: #f39a08;
+  --epr-pale: #f3eaff;
+  --epr-pale-cool: #faf7ff;
+  --epr-ink: #211735;
+  --epr-muted: #71677f;
+  --epr-border: #e2d5ef;
+  --epr-shadow: 0 8px 24px rgba(36, 16, 76, .07);
+  --epr-shadow-lg: 0 18px 44px rgba(36, 16, 76, .16);
+  --color-bg: #fffdfa;
+  --color-surface: #ffffff;
+  --color-surface-muted: #f3eaff;
+  --color-text: #211735;
+  --color-text-muted: #71677f;
+  --color-border: #e2d5ef;
+  --color-primary: #4a2183;
+  --color-primary-fg: #ffffff;
+  --color-accent: #f39a08;
+  --color-ring: #8c59c5;
+  --admin-bg: #faf7ff;
+  --admin-card: #ffffff;
+  --admin-border: #e2d5ef;
+  --admin-header-bg: #efe5fc;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+}
+
+.epr-internal .text-teal-300, .epr-internal .text-teal-400,
+.epr-internal .text-teal-500, .epr-internal .text-teal-600,
+.epr-internal .text-teal-700, .epr-internal .text-teal-800,
+.epr-internal .text-teal-900,
+.epr-internal .text-cyan-300, .epr-internal .text-cyan-400,
+.epr-internal .text-cyan-500, .epr-internal .text-cyan-600,
+.epr-internal .text-cyan-700, .epr-internal .text-cyan-800 {
+  color: #4a2183 !important;
+}
+.epr-internal .bg-teal-50, .epr-internal .bg-cyan-50 { background-color: #f3eaff !important; }
+.epr-internal .bg-teal-100, .epr-internal .bg-cyan-100 { background-color: #e8d9ff !important; }
+.epr-internal .bg-teal-200, .epr-internal .bg-cyan-200 { background-color: #d8c3ef !important; }
+.epr-internal .bg-teal-500, .epr-internal .bg-teal-600,
+.epr-internal .bg-teal-700,
+.epr-internal .bg-cyan-500, .epr-internal .bg-cyan-600,
+.epr-internal .bg-cyan-700,
+.epr-internal .bg-teal-800, .epr-internal .bg-teal-900,
+.epr-internal [class~="hover:bg-teal-600"]:hover,
+.epr-internal [class~="hover:bg-teal-700"]:hover,
+.epr-internal [class~="hover:bg-teal-800"]:hover,
+.epr-internal [class~="hover:bg-cyan-600"]:hover,
+.epr-internal [class~="hover:bg-cyan-700"]:hover {
+  background-color: #4a2183 !important;
+}
+.epr-internal .border-teal-100, .epr-internal .border-teal-200,
+.epr-internal .border-teal-300, .epr-internal .border-cyan-200,
+.epr-internal .border-cyan-300, .epr-internal .border-cyan-500 {
+  border-color: #d8c3ef !important;
+}
+.epr-internal .accent-teal-600 {
+  accent-color: #4a2183 !important;
+}
+.epr-internal :focus-visible { --tw-ring-color: #8c59c5; }
+
+/* Prefer the brand plum for shared action and admin surfaces while green stays
+   available to communicate successful or completed states. */
+.epr-internal .btn-primary { background-color: #4a2183; }
+.epr-internal .btn-primary:hover { background-color: #35145f; }
+.epr-internal .admin-card { border-color: #e2d5ef; }
+.epr-internal .admin-card-header,
+.epr-internal .admin-table thead th { background-color: #f3eaff; border-color: #e2d5ef; }
+
+/* EPR Compass homepage palette bridge. Legacy pages still contain fixed
+   Tailwind colors and hex utilities, so scope their visual tokens to the same
+   cream, plum, lavender and amber palette without changing semantic alerts. */
+.epr-public,
+.epr-internal {
+  --brand-primary: #3f1b66;
+  --brand-primary-hover: #562685;
+  --brand-secondary: #28104f;
+  --brand-accent: #e98200;
+  --brand-surface: #fffcf8;
+  --brand-text: #281d39;
+  --brand-muted: #72627e;
+  --brand-border: #e4d5ee;
+  --brand-pale: #f0e6fa;
+  --color-bg: #fffcf8;
+  --color-surface-muted: #f4ecfa;
+  --color-text: #281d39;
+  --color-text-muted: #72627e;
+  --color-border: #e4d5ee;
+  --color-primary: #3f1b66;
+  --color-ring: #8b59ad;
+  color: #281d39;
+}
+
+.epr-public .text-teal-300, .epr-public .text-teal-400,
+.epr-public .text-teal-500, .epr-public .text-teal-600,
+.epr-public .text-teal-700, .epr-public .text-cyan-500,
+.epr-public .text-cyan-600, .epr-public .text-cyan-700,
+.epr-public .text-eco-green-4, .epr-public .text-eco-green-5 {
+  color: #3f1b66 !important;
+}
+.epr-public .bg-teal-50, .epr-public .bg-cyan-50,
+.epr-public .bg-eco-green-1 { background-color: #f0e6fa !important; }
+.epr-public .bg-teal-100, .epr-public .bg-cyan-100 { background-color: #e9dcf5 !important; }
+.epr-public .bg-teal-500, .epr-public .bg-teal-600,
+.epr-public .bg-teal-700, .epr-public .bg-cyan-500,
+.epr-public .bg-cyan-600, .epr-public .bg-eco-green-4,
+.epr-public [class~="hover:bg-teal-600"]:hover, .epr-public [class~="hover:bg-teal-700"]:hover {
+  background-color: #3f1b66 !important;
+}
+.epr-public .border-teal-200, .epr-public .border-teal-300,
+.epr-public .border-cyan-200 { border-color: #d8c3ef !important; }
+.epr-public .text-eco-navy { color: #28104f !important; }
+.epr-public [class~="text-[#07875f]"],
+.epr-public [class~="text-[#056c4c]"],
+.epr-public [class~="text-[#78c943]"] { color: #4a2183 !important; }
+.epr-public [class~="bg-[#07875f]"],
+.epr-public [class~="bg-[#066e4e]"],
+.epr-public [class~="bg-[#056c4c]"] { background-color: #3f1b66 !important; }
+.epr-public [class~="border-[#07875f]"],
+.epr-public [class~="border-[#dfe9e4]"] { border-color: #e4d5ee !important; }
+.epr-public [class~="text-[#102c32]"] { color: #281d39 !important; }
+.epr-public [class~="text-[#607279]"] { color: #72627e !important; }
+.epr-public [class~="bg-[#032f3a]"] { background-color: #28104f !important; }
+.epr-public [class~="bg-[#fbfdfc]"] { background-color: #fffcf8 !important; }
+.epr-public [class~="border-[#dfe9e4]"] { border-color: #e4d5ee !important; }
+.epr-public [class~="focus:border-[#07875f]"]:focus,
+.epr-public [class~="focus:ring-[#07875f]/20"]:focus { --tw-ring-color: #8b59ad !important; border-color: #8b59ad !important; }
+.epr-public a.text-emerald-500, .epr-public a.text-emerald-600,
+.epr-public a.text-emerald-700, .epr-public a.text-green-600,
+.epr-public a.text-green-700 { color: #4a2183 !important; }
+.epr-public .text-emerald-300, .epr-public .text-emerald-400,
+.epr-public .text-emerald-500, .epr-public .text-emerald-600,
+.epr-public .text-emerald-700, .epr-public .text-emerald-800,
+.epr-public .text-green-400, .epr-public .text-green-500,
+.epr-public .text-green-600, .epr-public .text-green-700,
+.epr-public .text-green-800 { color: #4a2183 !important; }
+.epr-public .bg-emerald-50, .epr-public .bg-emerald-100,
+.epr-public .bg-green-50, .epr-public .bg-green-100 { background-color: #f0e6fa !important; }
+.epr-public .bg-emerald-500, .epr-public .bg-emerald-600,
+.epr-public .bg-emerald-700, .epr-public .bg-green-500,
+.epr-public .bg-green-600, .epr-public .bg-green-700,
+.epr-public [class~="hover:bg-emerald-600"]:hover,
+.epr-public [class~="hover:bg-emerald-700"]:hover,
+.epr-public [class~="hover:bg-green-600"]:hover,
+.epr-public [class~="hover:bg-green-700"]:hover { background-color: #3f1b66 !important; }
+.epr-public [class*="bg-emerald-500/"], .epr-public [class*="bg-green-500/"] { background-color: #f0e6fa !important; }
+.epr-public .border-emerald-200, .epr-public .border-emerald-300,
+.epr-public .border-green-200, .epr-public .border-green-300 { border-color: #d8c3ef !important; }
+.epr-public .from-emerald-500, .epr-public .from-emerald-600,
+.epr-public .from-green-500, .epr-public .from-green-600 {
+  --tw-gradient-from: #562685 var(--tw-gradient-from-position) !important;
+}
+.epr-public .to-emerald-600, .epr-public .to-emerald-700,
+.epr-public .to-green-600, .epr-public .to-green-700 {
+  --tw-gradient-to: #28104f var(--tw-gradient-to-position) !important;
+}
+.epr-public button.bg-emerald-500, .epr-public button.bg-emerald-600,
+.epr-public button.bg-green-600, .epr-public a.bg-emerald-600,
+.epr-public a.bg-green-600 { background-color: #3f1b66 !important; }
+
+/* Shared header/footer used outside the scoped public page wrapper. */
+header [class~="text-[#07875f]"], header [class~="text-[#056c4c]"],
+footer [class~="text-[#07875f]"], footer [class~="text-[#056c4c]"] { color: #4a2183 !important; }
+header [class~="bg-[#07875f]"], header [class~="bg-[#066e4e]"],
+footer [class~="bg-[#07875f]"], footer [class~="bg-[#066e4e]"] { background-color: #3f1b66 !important; }
+header [class~="border-[#dfe9e4]"], footer [class~="border-[#dfe9e4]"] { border-color: #e4d5ee !important; }
+
+/* Old authenticated pages use dark slate dashboards and old green/blue
+   accents. Render their app shell and cards with the light brand surfaces. */
+.epr-internal [class~="bg-[#060910]"],
+.epr-internal [class~="bg-[#020817]"],
+.epr-internal [class~="bg-[#080d1a]"],
+.epr-internal [class~="bg-[#0c1022]"],
+.epr-internal [class~="bg-slate-900"],
+.epr-internal [class~="bg-slate-900/30"],
+.epr-internal [class~="bg-slate-900/60"],
+.epr-internal [class~="bg-slate-800"],
+.epr-internal [class~="bg-slate-800/60"],
+.epr-internal [class~="bg-slate-800/40"],
+.epr-internal [class~="bg-slate-800/30"],
+.epr-internal [class~="bg-gray-950"],
+.epr-internal [class~="bg-gray-900"],
+.epr-internal [class~="bg-gray-800"] {
+  background-color: #fffaf5 !important;
+}
+.epr-internal [class~="bg-[#0a0e1a]"],
+.epr-internal [class~="bg-[#0b1020]"],
+.epr-internal [class~="bg-[#10162a]"] {
+  background-color: #28104f !important;
+}
+.epr-internal [class~="text-slate-100"],
+.epr-internal [class~="text-slate-200"],
+.epr-internal [class~="text-slate-300"] { color: #281d39 !important; }
+.epr-internal [class~="text-slate-400"],
+.epr-internal [class~="text-slate-500"],
+.epr-internal [class~="text-slate-600"],
+.epr-internal [class~="text-gray-100"],
+.epr-internal [class~="text-gray-200"],
+.epr-internal [class~="text-gray-300"] { color: #72627e !important; }
+.epr-internal [class~="border-slate-700"],
+.epr-internal [class~="border-slate-800"],
+.epr-internal [class~="border-slate-800/80"],
+.epr-internal [class~="border-white/[0.06]"] { border-color: #e4d5ee !important; }
+.epr-internal [class~="text-indigo-300"], .epr-internal [class~="text-indigo-400"],
+.epr-internal [class~="text-indigo-500"], .epr-internal [class~="text-violet-300"],
+.epr-internal [class~="text-violet-400"], .epr-internal [class~="text-purple-300"],
+.epr-internal [class~="text-purple-400"], .epr-internal [class~="text-blue-300"],
+.epr-internal [class~="text-blue-400"], .epr-internal [class~="text-blue-500"],
+.epr-internal [class~="text-blue-600"] { color: #4a2183 !important; }
+.epr-internal [class~="bg-indigo-600"], .epr-internal [class~="bg-indigo-700"],
+.epr-internal [class~="bg-violet-600"], .epr-internal [class~="bg-purple-600"],
+.epr-internal [class~="bg-blue-600"], .epr-internal [class~="bg-blue-700"],
+.epr-internal [class~="hover:bg-indigo-500"]:hover,
+.epr-internal [class~="hover:bg-indigo-700"]:hover {
+  background-color: #4a2183 !important;
+}
+.epr-internal [class~="bg-indigo-500/10"], .epr-internal [class~="bg-indigo-500/20"],
+.epr-internal [class~="bg-violet-500/10"], .epr-internal [class~="bg-purple-500/10"] {
+  background-color: #f0e6fa !important;
+}
+.epr-internal [class~="border-indigo-500/30"],
+.epr-internal [class~="border-indigo-500/40"],
+.epr-internal [class~="border-violet-500/30"] { border-color: #d8c3ef !important; }
+.epr-internal .badge-active,
+.epr-internal .admin-kpi-delta-up { color: #4a2183 !important; }
+.epr-internal .badge-active { background-color: #f0e6fa !important; }
+.epr-internal .text-emerald-300, .epr-internal .text-emerald-400,
+.epr-internal .text-emerald-500, .epr-internal .text-emerald-600,
+.epr-internal .text-green-400, .epr-internal .text-green-500,
+.epr-internal .text-green-600 { color: #4a2183 !important; }
+.epr-internal .bg-emerald-500, .epr-internal .bg-emerald-600,
+.epr-internal .bg-emerald-700, .epr-internal .bg-green-500,
+.epr-internal .bg-green-600, .epr-internal .bg-green-700 { background-color: #4a2183 !important; }
+.epr-internal .bg-emerald-50, .epr-internal .bg-green-50,
+.epr-internal .bg-emerald-100, .epr-internal .bg-green-100 { background-color: #f0e6fa !important; }
+.epr-internal .border-emerald-200, .epr-internal .border-emerald-300,
+.epr-internal .border-green-200, .epr-internal .border-green-300 { border-color: #d8c3ef !important; }
+.epr-internal .from-emerald-500, .epr-internal .from-emerald-600,
+.epr-internal .from-green-500, .epr-internal .from-green-600,
+.epr-internal .from-indigo-500, .epr-internal .from-violet-500 {
+  --tw-gradient-from: #562685 var(--tw-gradient-from-position) !important;
+}
+.epr-internal .to-emerald-600, .epr-internal .to-emerald-700,
+.epr-internal .to-green-600, .epr-internal .to-green-700,
+.epr-internal .to-indigo-600, .epr-internal .to-violet-600 {
+  --tw-gradient-to: #28104f var(--tw-gradient-to-position) !important;
+}
+.epr-internal [class~="text-[#07875f]"],
+.epr-internal [class~="text-[#78c943]"],
+.epr-internal [class~="text-[#032f3a]"] { color: #4a2183 !important; }
+.epr-internal [class~="bg-[#07875f]"],
+.epr-internal [class~="bg-[#032f3a]"] { background-color: #3f1b66 !important; }
+.epr-internal [class~="text-white"] { color: #281d39 !important; }
+.epr-internal [class~="bg-[#0a0e1a]"] [class~="text-white"],
+.epr-internal [class~="bg-[#0b1020]"] [class~="text-white"],
+.epr-internal [class~="bg-[#10162a]"] [class~="text-white"],
+.epr-internal button[class~="text-white"],
+.epr-internal a[class~="text-white"] { color: #fff !important; }
+.epr-internal input:not([type="checkbox"]):not([type="radio"]),
+.epr-internal textarea, .epr-internal select {
+  color: #281d39 !important;
+  background-color: #fff !important;
+  border-color: #d8c3ef !important;
+}
+.epr-internal input::placeholder, .epr-internal textarea::placeholder { color: #8b7b96 !important; }
+.epr-internal button.bg-emerald-600,
+.epr-internal a.bg-emerald-600,
+.epr-internal button.bg-emerald-500,
+.epr-internal a.bg-emerald-500 { background-color: #4a2183 !important; }
+.epr-internal :focus-visible { --tw-ring-color: #8b59ad; }
+
+/* Final EPR Compass internal palette: keep authenticated workspaces in the
+   same cream, plum, lavender and amber system as the homepage. The scoped
+   bridge also catches older pages that still use their former Tailwind colors. */
+html:has(.epr-internal),
+body:has(.epr-internal) {
+  color-scheme: light;
+  background-color: #fffcf8 !important;
+  color: #281d39;
+}
+
+.epr-internal {
+  --brand-primary: #3f1b66;
+  --brand-primary-hover: #562685;
+  --brand-secondary: #28104f;
+  --brand-accent: #e98200;
+  --brand-surface: #fffcf8;
+  --brand-text: #281d39;
+  --brand-muted: #72627e;
+  --brand-border: #e4d5ee;
+  --brand-pale: #f0e6fa;
+  --epr-navy: #28104f;
+  --epr-navy-deep: #180832;
+  --epr-green: #3f1b66;
+  --epr-green-dark: #28104f;
+  --epr-lime: #e98200;
+  --epr-pale: #f0e6fa;
+  --epr-pale-cool: #fffcf8;
+  --epr-ink: #281d39;
+  --epr-muted: #72627e;
+  --epr-border: #e4d5ee;
+  --color-bg: #fffcf8;
+  --color-surface: #ffffff;
+  --color-surface-muted: #f0e6fa;
+  --color-text: #281d39;
+  --color-text-muted: #72627e;
+  --color-border: #e4d5ee;
+  --color-primary: #3f1b66;
+  --color-primary-fg: #ffffff;
+  --color-accent: #e98200;
+  --color-ring: #8b59ad;
+  --admin-bg: #fffcf8;
+  --admin-card: #ffffff;
+  --admin-border: #e4d5ee;
+  --admin-header-bg: #f0e6fa;
+  color-scheme: light;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+}
+
+/* Light neutral surfaces and readable ink. */
+.epr-internal [class~="bg-slate-50"],
+.epr-internal [class~="bg-gray-50"],
+.epr-internal [class~="bg-[#fbfdfc]"],
+.epr-internal [class~="bg-[#fffdfa]"],
+.epr-internal [class~="bg-[#f8fafc]"] { background-color: #fffcf8 !important; }
+.epr-internal [class~="bg-slate-100"],
+.epr-internal [class~="bg-gray-100"],
+.epr-internal [class~="bg-[#eff8f1]"] { background-color: #f0e6fa !important; }
+.epr-internal [class~="bg-slate-200"],
+.epr-internal [class~="bg-gray-200"] { background-color: #e9dcf5 !important; }
+.epr-internal [class~="text-slate-700"],
+.epr-internal [class~="text-slate-800"],
+.epr-internal [class~="text-slate-900"],
+.epr-internal [class~="text-gray-700"],
+.epr-internal [class~="text-gray-800"],
+.epr-internal [class~="text-gray-900"],
+.epr-internal [class~="text-[#102c32]"] { color: #281d39 !important; }
+.epr-internal [class~="text-slate-400"],
+.epr-internal [class~="text-slate-500"],
+.epr-internal [class~="text-slate-600"],
+.epr-internal [class~="text-gray-400"],
+.epr-internal [class~="text-gray-500"],
+.epr-internal [class~="text-gray-600"],
+.epr-internal [class~="text-[#607279]"],
+.epr-internal [class~="text-[#8aa0a6]"] { color: #72627e !important; }
+.epr-internal [class~="border-slate-100"],
+.epr-internal [class~="border-slate-200"],
+.epr-internal [class~="border-gray-100"],
+.epr-internal [class~="border-gray-200"],
+.epr-internal [class~="border-[#dfe9e4]"],
+.epr-internal [class~="border-[#86b9a6]"] { border-color: #e4d5ee !important; }
+.epr-internal [class~="hover:bg-slate-50"]:hover,
+.epr-internal [class~="hover:bg-gray-50"]:hover { background-color: #f0e6fa !important; }
+.epr-internal [class~="hover:text-slate-700"]:hover,
+.epr-internal [class~="hover:text-gray-700"]:hover { color: #3f1b66 !important; }
+
+/* Replace legacy blue, teal, cyan, green and indigo accents with the brand. */
+.epr-internal [class~="text-blue-300"], .epr-internal [class~="text-blue-400"],
+.epr-internal [class~="text-blue-500"], .epr-internal [class~="text-blue-600"],
+.epr-internal [class~="text-blue-700"], .epr-internal [class~="text-blue-800"],
+.epr-internal [class~="text-blue-900"], .epr-internal [class~="text-indigo-300"],
+.epr-internal [class~="text-indigo-400"], .epr-internal [class~="text-indigo-500"],
+.epr-internal [class~="text-indigo-600"], .epr-internal [class~="text-indigo-700"],
+.epr-internal [class~="text-violet-300"], .epr-internal [class~="text-violet-400"],
+.epr-internal [class~="text-violet-500"], .epr-internal [class~="text-violet-600"],
+.epr-internal [class~="text-violet-700"], .epr-internal [class~="text-purple-300"],
+.epr-internal [class~="text-purple-400"], .epr-internal [class~="text-purple-500"],
+.epr-internal [class~="text-purple-600"], .epr-internal [class~="text-purple-700"],
+.epr-internal [class~="text-teal-300"], .epr-internal [class~="text-teal-400"],
+.epr-internal [class~="text-teal-500"], .epr-internal [class~="text-teal-600"],
+.epr-internal [class~="text-teal-700"], .epr-internal [class~="text-teal-800"],
+.epr-internal [class~="text-cyan-300"], .epr-internal [class~="text-cyan-400"],
+.epr-internal [class~="text-cyan-500"], .epr-internal [class~="text-cyan-600"],
+.epr-internal [class~="text-cyan-700"], .epr-internal [class~="text-emerald-300"],
+.epr-internal [class~="text-emerald-400"], .epr-internal [class~="text-emerald-500"],
+.epr-internal [class~="text-emerald-600"], .epr-internal [class~="text-emerald-700"],
+.epr-internal [class~="text-emerald-800"], .epr-internal [class~="text-green-300"],
+.epr-internal [class~="text-green-400"], .epr-internal [class~="text-green-500"],
+.epr-internal [class~="text-green-600"], .epr-internal [class~="text-green-700"],
+.epr-internal [class~="text-green-800"],
+.epr-internal [class~="text-[#07875f]"],
+.epr-internal [class~="text-[#0a6e50]"] { color: #3f1b66 !important; }
+
+.epr-internal [class~="bg-blue-50"], .epr-internal [class~="bg-blue-100"],
+.epr-internal [class~="bg-indigo-50"], .epr-internal [class~="bg-indigo-100"],
+.epr-internal [class~="bg-violet-50"], .epr-internal [class~="bg-violet-100"],
+.epr-internal [class~="bg-purple-50"], .epr-internal [class~="bg-purple-100"],
+.epr-internal [class~="bg-teal-50"], .epr-internal [class~="bg-teal-100"],
+.epr-internal [class~="bg-cyan-50"], .epr-internal [class~="bg-cyan-100"],
+.epr-internal [class~="bg-emerald-50"], .epr-internal [class~="bg-emerald-100"],
+.epr-internal [class~="bg-green-50"], .epr-internal [class~="bg-green-100"],
+.epr-internal [class~="bg-[#eff8f1]"] { background-color: #f0e6fa !important; }
+.epr-internal [class~="bg-blue-200"], .epr-internal [class~="bg-indigo-200"],
+.epr-internal [class~="bg-violet-200"], .epr-internal [class~="bg-purple-200"],
+.epr-internal [class~="bg-teal-200"], .epr-internal [class~="bg-cyan-200"],
+.epr-internal [class~="bg-emerald-200"], .epr-internal [class~="bg-green-200"] { background-color: #e9dcf5 !important; }
+.epr-internal [class~="bg-blue-500"], .epr-internal [class~="bg-blue-600"], .epr-internal [class~="bg-blue-700"],
+.epr-internal [class~="bg-indigo-500"], .epr-internal [class~="bg-indigo-600"], .epr-internal [class~="bg-indigo-700"],
+.epr-internal [class~="bg-violet-500"], .epr-internal [class~="bg-violet-600"], .epr-internal [class~="bg-violet-700"],
+.epr-internal [class~="bg-purple-500"], .epr-internal [class~="bg-purple-600"], .epr-internal [class~="bg-purple-700"],
+.epr-internal [class~="bg-teal-500"], .epr-internal [class~="bg-teal-600"], .epr-internal [class~="bg-teal-700"],
+.epr-internal [class~="bg-cyan-500"], .epr-internal [class~="bg-cyan-600"], .epr-internal [class~="bg-cyan-700"],
+.epr-internal [class~="bg-emerald-500"], .epr-internal [class~="bg-emerald-600"], .epr-internal [class~="bg-emerald-700"],
+.epr-internal [class~="bg-green-500"], .epr-internal [class~="bg-green-600"], .epr-internal [class~="bg-green-700"],
+.epr-internal [class~="bg-[#07875f]"] { background-color: #3f1b66 !important; }
+.epr-internal [class~="hover:bg-blue-50"]:hover, .epr-internal [class~="hover:bg-indigo-50"]:hover,
+.epr-internal [class~="hover:bg-violet-50"]:hover, .epr-internal [class~="hover:bg-teal-50"]:hover,
+.epr-internal [class~="hover:bg-emerald-50"]:hover, .epr-internal [class~="hover:bg-green-50"]:hover,
+.epr-internal [class~="hover:bg-blue-100"]:hover, .epr-internal [class~="hover:bg-indigo-100"]:hover,
+.epr-internal [class~="hover:bg-teal-100"]:hover { background-color: #f0e6fa !important; }
+.epr-internal [class~="hover:bg-blue-600"]:hover, .epr-internal [class~="hover:bg-blue-700"]:hover,
+.epr-internal [class~="hover:bg-indigo-600"]:hover, .epr-internal [class~="hover:bg-indigo-700"]:hover,
+.epr-internal [class~="hover:bg-violet-600"]:hover, .epr-internal [class~="hover:bg-teal-600"]:hover,
+.epr-internal [class~="hover:bg-teal-700"]:hover, .epr-internal [class~="hover:bg-emerald-600"]:hover,
+.epr-internal [class~="hover:bg-emerald-700"]:hover, .epr-internal [class~="hover:bg-green-600"]:hover,
+.epr-internal [class~="hover:bg-green-700"]:hover { background-color: #28104f !important; }
+.epr-internal [class*="hover:text-blue-"]:hover, .epr-internal [class*="hover:text-indigo-"]:hover,
+.epr-internal [class*="hover:text-violet-"]:hover, .epr-internal [class*="hover:text-teal-"]:hover,
+.epr-internal [class*="hover:text-cyan-"]:hover, .epr-internal [class*="hover:text-emerald-"]:hover,
+.epr-internal [class*="hover:text-green-"]:hover { color: #3f1b66 !important; }
+
+.epr-internal [class*="border-blue-"], .epr-internal [class*="border-indigo-"],
+.epr-internal [class*="border-violet-"], .epr-internal [class*="border-purple-"],
+.epr-internal [class*="border-teal-"], .epr-internal [class*="border-cyan-"],
+.epr-internal [class*="border-emerald-"], .epr-internal [class*="border-green-"],
+.epr-internal [class~="border-[#dfe9e4]"], .epr-internal [class~="border-[#86b9a6]"] { border-color: #e4d5ee !important; }
+.epr-internal [class*="ring-blue-"], .epr-internal [class*="ring-indigo-"],
+.epr-internal [class*="ring-violet-"], .epr-internal [class*="ring-teal-"],
+.epr-internal [class*="ring-emerald-"], .epr-internal [class*="ring-green-"] { --tw-ring-color: #8b59ad !important; }
+.epr-internal [class*="focus:border-blue-"]:focus, .epr-internal [class*="focus:border-indigo-"]:focus,
+.epr-internal [class*="focus:border-teal-"]:focus, .epr-internal [class*="focus:border-emerald-"]:focus { border-color: #8b59ad !important; }
+.epr-internal [class*="accent-blue-"], .epr-internal [class*="accent-indigo-"],
+.epr-internal [class*="accent-teal-"], .epr-internal [class*="accent-emerald-"] { accent-color: #3f1b66 !important; }
+
+/* Retint old dark dashboard shells while keeping their navigation panels rich. */
+.epr-internal [class~="bg-[#060910]"], .epr-internal [class~="bg-[#020817]"],
+.epr-internal [class~="bg-[#080d1a]"], .epr-internal [class~="bg-[#0c1022]"],
+.epr-internal [class~="bg-slate-900"], .epr-internal [class~="bg-slate-800"],
+.epr-internal [class~="bg-gray-950"], .epr-internal [class~="bg-gray-900"],
+.epr-internal [class~="bg-gray-800"], .epr-internal [class~="dark:bg-gray-900"],
+.epr-internal [class~="dark:bg-gray-800"], .epr-internal [class~="dark:bg-slate-900"],
+.epr-internal [class~="dark:bg-slate-800"] { background-color: #fffcf8 !important; }
+.epr-internal [class~="bg-[#0a0e1a]"], .epr-internal [class~="bg-[#0b1020]"],
+.epr-internal [class~="bg-[#10162a]"], .epr-internal [class~="bg-[#032f3a]"],
+.epr-internal [class~="bg-[#0c1022]/95"], .epr-internal [class~="bg-[#0a0e1a]/95"],
+.epr-internal [class~="bg-[#28104f]"], .epr-internal [class~="bg-[#3f1b66]"],
+.epr-internal [class~="bg-[#4a2183]"], .epr-internal [class~="dark:bg-slate-950"] { background-color: #28104f !important; }
+.epr-internal [class*="dark:bg-slate-"], .epr-internal [class*="dark:bg-gray-"] { background-color: #fffcf8 !important; }
+.epr-internal [class~="text-slate-100"], .epr-internal [class~="text-slate-200"],
+.epr-internal [class~="text-slate-300"], .epr-internal [class~="text-gray-100"],
+.epr-internal [class~="text-gray-200"], .epr-internal [class~="text-gray-300"],
+.epr-internal [class~="dark:text-gray-100"], .epr-internal [class~="dark:text-gray-200"],
+.epr-internal [class~="dark:text-slate-100"], .epr-internal [class~="dark:text-slate-200"] { color: #281d39 !important; }
+.epr-internal [class~="dark:text-gray-400"], .epr-internal [class~="dark:text-gray-500"],
+.epr-internal [class~="dark:text-slate-400"], .epr-internal [class~="dark:text-slate-500"] { color: #72627e !important; }
+.epr-internal [class*="dark:border-gray-"], .epr-internal [class*="dark:border-slate-"] { border-color: #e4d5ee !important; }
+.epr-internal [class~="border-slate-700"], .epr-internal [class~="border-slate-800"],
+.epr-internal [class~="border-slate-800/80"], .epr-internal [class~="border-white/[0.06]"] { border-color: #e4d5ee !important; }
+.epr-internal [class~="text-[#032f3a]"] { color: #281d39 !important; }
+.epr-internal [class~="text-[#78c943]"] { color: #e98200 !important; }
+.epr-internal [class~="text-[#07875f]"], .epr-internal [class~="text-[#0a6e50]"] { color: #3f1b66 !important; }
+.epr-internal [class~="bg-[#fbfdfc]"], .epr-internal [class~="bg-[#fffdfa]"] { background-color: #fffcf8 !important; }
+.epr-internal [class~="bg-[#eff8f1]"] { background-color: #f0e6fa !important; }
+.epr-internal [class~="bg-[#07875f]"] { background-color: #3f1b66 !important; }
+.epr-internal [class~="bg-[#066e4e]"], .epr-internal [class~="bg-[#056c4c]"] { background-color: #28104f !important; }
+.epr-internal [class*="from-emerald-"], .epr-internal [class*="from-green-"],
+.epr-internal [class*="from-indigo-"], .epr-internal [class*="from-violet-"],
+.epr-internal [class*="from-blue-"] { --tw-gradient-from: #562685 var(--tw-gradient-from-position) !important; }
+.epr-internal [class*="to-emerald-"], .epr-internal [class*="to-green-"],
+.epr-internal [class*="to-indigo-"], .epr-internal [class*="to-violet-"],
+.epr-internal [class*="to-blue-"] { --tw-gradient-to: #28104f var(--tw-gradient-to-position) !important; }
+
+/* Keep white text only on actual brand surfaces and action controls. */
+.epr-internal button[class~="text-white"],
+.epr-internal a[class~="text-white"],
+.epr-internal [class~="text-white"]:is([class~="bg-[#032f3a]"], [class~="bg-[#0a0e1a]"], [class~="bg-[#0b1020]"], [class~="bg-[#10162a]"], [class~="bg-[#28104f]"], [class~="bg-[#3f1b66]"], [class~="bg-[#4a2183]"], [class~="bg-[#07875f]"], [class~="bg-blue-600"], [class~="bg-blue-700"], [class~="bg-indigo-600"], [class~="bg-violet-600"], [class~="bg-teal-600"], [class~="bg-emerald-600"], [class~="bg-green-600"]),
+.epr-internal [class~="text-white"]:is([class*="from-indigo-"], [class*="from-violet-"], [class*="from-emerald-"], [class*="from-blue-"]),
+.epr-internal [class*="from-indigo-"] [class~="text-white"],
+.epr-internal [class*="from-violet-"] [class~="text-white"],
+.epr-internal [class*="from-emerald-"] [class~="text-white"],
+.epr-internal [class*="from-blue-"] [class~="text-white"] { color: #ffffff !important; }
+
+.epr-internal input:not([type="checkbox"]):not([type="radio"]),
+.epr-internal textarea,
+.epr-internal select {
+  background-color: #ffffff !important;
+  color: #281d39 !important;
+  -webkit-text-fill-color: #281d39 !important;
+  border-color: #e4d5ee !important;
+}
+.epr-internal input::placeholder,
+.epr-internal textarea::placeholder { color: #8a7d96 !important; }
+.epr-internal select option { background-color: #ffffff !important; color: #281d39 !important; }
+.epr-internal .btn-primary { background-color: #3f1b66 !important; }
+.epr-internal .btn-primary:hover { background-color: #28104f !important; }
+.epr-internal .admin-card { border-color: #e4d5ee !important; }
+.epr-internal .admin-card-header,
+.epr-internal .admin-table thead th { background-color: #f0e6fa !important; border-color: #e4d5ee !important; }
+.epr-internal :focus-visible { --tw-ring-color: #8b59ad !important; }
+
+/* Tailwind dark-mode variants are common in the legacy workspaces too. Keep
+   their class tokens from reintroducing blue-gray surfaces when dark mode is on. */
+.epr-internal [class*="dark:bg-slate-"],
+.epr-internal [class*="dark:bg-gray-"] { background-color: #fffcf8 !important; }
+.epr-internal [class*="dark:bg-blue-"], .epr-internal [class*="dark:bg-indigo-"],
+.epr-internal [class*="dark:bg-violet-"], .epr-internal [class*="dark:bg-purple-"],
+.epr-internal [class*="dark:bg-teal-"], .epr-internal [class*="dark:bg-cyan-"],
+.epr-internal [class*="dark:bg-emerald-"], .epr-internal [class*="dark:bg-green-"] { background-color: #f0e6fa !important; }
+.epr-internal [class*="dark:text-slate-100"], .epr-internal [class*="dark:text-slate-200"],
+.epr-internal [class*="dark:text-slate-300"], .epr-internal [class*="dark:text-gray-100"],
+.epr-internal [class*="dark:text-gray-200"], .epr-internal [class*="dark:text-gray-300"] { color: #281d39 !important; }
+.epr-internal [class*="dark:text-slate-400"], .epr-internal [class*="dark:text-slate-500"],
+.epr-internal [class*="dark:text-slate-600"], .epr-internal [class*="dark:text-gray-400"],
+.epr-internal [class*="dark:text-gray-500"], .epr-internal [class*="dark:text-gray-600"] { color: #72627e !important; }
+.epr-internal [class*="dark:text-blue-"], .epr-internal [class*="dark:text-indigo-"],
+.epr-internal [class*="dark:text-violet-"], .epr-internal [class*="dark:text-purple-"],
+.epr-internal [class*="dark:text-teal-"], .epr-internal [class*="dark:text-cyan-"],
+.epr-internal [class*="dark:text-emerald-"], .epr-internal [class*="dark:text-green-"] { color: #3f1b66 !important; }
+.epr-internal [class*="dark:hover:bg-slate-"]:hover,
+.epr-internal [class*="dark:hover:bg-gray-"]:hover { background-color: #f0e6fa !important; }
+.epr-internal [class*="dark:hover:bg-blue-"]:hover,
+.epr-internal [class*="dark:hover:bg-indigo-"]:hover,
+.epr-internal [class*="dark:hover:bg-violet-"]:hover,
+.epr-internal [class*="dark:hover:bg-teal-"]:hover,
+.epr-internal [class*="dark:hover:bg-emerald-"]:hover,
+.epr-internal [class*="dark:hover:bg-green-"]:hover { background-color: #f0e6fa !important; }
+.epr-internal [class*="dark:border-slate-"], .epr-internal [class*="dark:border-gray-"],
+.epr-internal [class*="dark:border-blue-"], .epr-internal [class*="dark:border-indigo-"],
+.epr-internal [class*="dark:border-teal-"], .epr-internal [class*="dark:border-emerald-"] { border-color: #e4d5ee !important; }
+
+/* Direct hex utilities remain in a few older authenticated modules. */
+.epr-internal [class~="bg-[#020817]"], .epr-internal [class~="bg-[#021d24]"],
+.epr-internal [class~="bg-[#022936]"], .epr-internal [class~="bg-[#040818]"],
+.epr-internal [class~="bg-[#040d1c]"], .epr-internal [class~="bg-[#04141a]"],
+.epr-internal [class~="bg-[#041d24]"], .epr-internal [class~="bg-[#050c14]"],
+.epr-internal [class~="bg-[#060c1a]"], .epr-internal [class~="bg-[#06151a]"],
+.epr-internal [class~="bg-[#07463f]"], .epr-internal [class~="bg-[#07543f]"],
+.epr-internal [class~="bg-[#08041a]"], .epr-internal [class~="bg-[#080f1e]"],
+.epr-internal [class~="bg-[#0A0F1E]"], .epr-internal [class~="bg-[#0a0f1e]"],
+.epr-internal [class~="bg-[#0b1a0b]"], .epr-internal [class~="bg-[#0c0f1a]"],
+.epr-internal [class~="bg-[#0c4d45]"], .epr-internal [class~="bg-[#0d0f1a]"],
+.epr-internal [class~="bg-[#0d1117]"], .epr-internal [class~="bg-[#0D1428]"],
+.epr-internal [class~="bg-[#0d1526]"], .epr-internal [class~="bg-[#0E1529]"],
+.epr-internal [class~="bg-[#0e1628]"], .epr-internal [class~="bg-[#101A33]"],
+.epr-internal [class~="bg-[#105461]"], .epr-internal [class~="bg-[#111329]"],
+.epr-internal [class~="bg-[#131D38]"], .epr-internal [class~="bg-[#140a00]"],
+.epr-internal [class~="bg-[#160b30]"], .epr-internal [class~="bg-[#1B4332]"] { background-color: #fffcf8 !important; }
+.epr-internal [class~="bg-[#006994]"], .epr-internal [class~="bg-[#0077B6]"],
+.epr-internal [class~="bg-[#00D4AA]"], .epr-internal [class~="bg-[#1ebe5d]"],
+.epr-internal [class~="bg-[#25D366]"], .epr-internal [class~="bg-[#27ceb8]"],
+.epr-internal [class~="bg-[#6ee7b7]"], .epr-internal [class~="bg-[#78c943]"] { background-color: #3f1b66 !important; }
+.epr-internal [class~="bg-[#e7efe9]"], .epr-internal [class~="bg-[#edf7f1]"],
+.epr-internal [class~="bg-[#eef7e7]"], .epr-internal [class~="bg-[#eef7f2]"],
+.epr-internal [class~="bg-[#effbf5]"], .epr-internal [class~="bg-[#f0f4f8]"],
+.epr-internal [class~="bg-[#f0f8f4]"], .epr-internal [class~="bg-[#f5f7f5]"],
+.epr-internal [class~="bg-[#f5faf7]"], .epr-internal [class~="bg-[#f8faf9]"],
+.epr-internal [class~="bg-[#f8fafc]"], .epr-internal [class~="bg-[#FAF7F2]"] { background-color: #f0e6fa !important; }
+.epr-internal [class~="text-[#07593f]"], .epr-internal [class~="text-[#0c4d45]"],
+.epr-internal [class~="text-[#27ceb8]"], .epr-internal [class~="text-[#00D4AA]"],
+.epr-internal [class~="text-[#25D366]"], .epr-internal [class~="text-[#1ebe5d]"],
+.epr-internal [class~="text-[#6ee7b7]"], .epr-internal [class~="text-[#006994]"],
+.epr-internal [class~="text-[#0077B6]"] { color: #3f1b66 !important; }
+.epr-internal [class~="text-[#78c943]"] { color: #e98200 !important; }
+.epr-internal [class~="border-[#dfe9e4]"], .epr-internal [class~="border-[#0b4854]"],
+.epr-internal [class~="border-[#0b4852]"] { border-color: #e4d5ee !important; }

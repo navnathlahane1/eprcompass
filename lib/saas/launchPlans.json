@@ -1,0 +1,7 @@
+[
+  {"code":"importer","name":"Starter","monthly_paise":299900,"annual_paise":2999000,"currency":"INR","limits":{"seats":3,"companies":1,"countries":1,"storage_bytes":10737418240,"ai_requests":100,"exports":50}},
+  {"code":"one_country","name":"One Country","monthly_paise":799900,"annual_paise":7999000,"currency":"INR","limits":{"seats":10,"companies":3,"countries":1,"storage_bytes":53687091200,"ai_requests":500,"exports":250}},
+  {"code":"multi_country","name":"Multi-country","monthly_paise":1999900,"annual_paise":19999000,"currency":"INR","limits":{"seats":25,"companies":10,"countries":5,"storage_bytes":214748364800,"ai_requests":2000,"exports":1000}},
+  {"code":"agency","name":"Agency","monthly_paise":2999900,"annual_paise":29999000,"currency":"INR","limits":{"seats":25,"companies":50,"countries":5,"storage_bytes":536870912000,"ai_requests":5000,"exports":2500}},
+  {"code":"enterprise","name":"Enterprise","monthly_paise":null,"annual_paise":null,"currency":"INR","limits":{}}
+]

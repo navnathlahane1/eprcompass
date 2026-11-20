@@ -1,0 +1,25 @@
+import type { TourStep } from '@/components/portal/tour/usePortalTour';
+
+export const OPS_TOUR_STEPS: TourStep[] = [
+  { id: '/ops/dashboard', title: 'Dashboard', body: 'Your home screen — a quick snapshot of what needs your attention today.' },
+  { id: '/ops/tasks', title: 'My Tasks', body: 'Every task assigned to you, so you always know what to work on next.' },
+  { id: '/ops/daily-log', title: 'Daily Log', body: 'Log what you worked on each day — it helps your manager track progress and hours.' },
+  { id: '/ops/training', title: 'Training', body: 'Onboarding and skill-building modules you need to complete for your role.' },
+  { id: '/ops/proposals', title: 'Proposals', body: 'Draft, track, and manage client proposals from one place.' },
+  { id: '/ops/documents', title: 'Documents / Templates', body: 'Store and reuse compliance documents or proposal templates, depending on your role.' },
+  { id: '/ops/checklists', title: 'Checklists', body: 'Step-by-step compliance checklists to make sure nothing gets missed on a filing.' },
+  { id: '/ops/research', title: 'Research', body: 'A workspace for logging market and regulatory research you gather for clients.' },
+  { id: '/intel', title: 'Intel Portal', body: 'Deeper market-intelligence dashboards — company data, industry trends, and competitor tracking.' },
+  { id: '/ops/reports', title: 'Reports', body: 'Build and review MIS reports summarising operational and compliance data.' },
+  { id: '/ops/exports', title: 'Data Exports', body: 'Download raw data extracts for reporting or analysis outside the portal.' },
+  { id: '/ops/lead-gen', title: 'Lead Pipeline', body: 'Track prospective clients as they move through your sales pipeline.' },
+  { id: '/ops/lead-sources', title: 'Lead Sources', body: 'See where your leads are coming from so you know which channels are working.' },
+  { id: '/ops/appointments', title: 'Appointments', body: 'Schedule and manage meetings or calls booked with prospects and clients.' },
+  { id: '/ops/followups', title: 'Follow-ups', body: 'A reminder list of contacts you need to circle back with.' },
+  { id: '/ops/crm-data', title: 'Data Entry', body: 'Add and clean up client and contact records in the CRM.' },
+  { id: '/ops/contacts', title: 'Contacts', body: 'The master list of client and prospect contacts you work with.' },
+  { id: '/ops/support', title: 'Support Queue', body: 'Incoming customer support requests waiting for a response.' },
+  { id: '/ops/my-tickets', title: 'My Tickets', body: 'Support tickets currently assigned to you.' },
+  { id: '/ops/schedule', title: 'Scheduling', body: 'Manage your own calendar and any meetings you help coordinate for the team.' },
+  { id: '/ops/comms-log', title: 'Communication Log', body: 'A running record of calls, emails, and messages you have sent on behalf of clients.' },
+];
